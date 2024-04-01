@@ -1,32 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useRegisterMutation } from '../../store/apis/authApi';
+import { useSignUpMutation } from '../../store/apis/authApi';
+import Loader from 'react-spinner-loader';
 const SignUp = () => {
-  const { data, isLoading, isSuccess, isError } = useRegisterMutation();
+  const [signUp, { isLoading }] = useSignUpMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm({
     mode: 'onBlur',
   });
 
-  const onSubmit = (data) => {
-    {
-      isLoading && <p>Loading...</p>;
-    }
-    {
-      isSuccess && <p>Success</p>;
-    }
+  const onSubmit = async (submittedData) => {
+    console.log(submittedData);
     const body = {
-      ...data,
+      ...submittedData,
       isPrivate: true,
     };
+    console.log('body', body);
     try {
-      const response = register(body);
-      if (response.data) {
+      const response = await signUp(body);
+      if (response?.data) {
         console.log(response.data);
       } else {
         console.log(response.error);
@@ -36,7 +32,6 @@ const SignUp = () => {
     }
   };
 
-  const password = watch('password');
   return (
     <div className="flex flex-col mt-4">
       <header className="place-self-center text-xl font-bold flex py-4 text-blue-600">
@@ -44,6 +39,9 @@ const SignUp = () => {
       </header>
 
       <div className="flex flex-col pb-1 shadow-none bg-slate-100 rounded-lg w-1/4 mx-auto min-w-max">
+        <div className="z-20">
+          <Loader show={isLoading} type="body" />
+        </div>
         <form
           className="mx-8 flex flex-col"
           onSubmit={handleSubmit(onSubmit)} // Handle form submission
@@ -54,36 +52,99 @@ const SignUp = () => {
           <label className="text-sm text-left py-1 text-slate-900">
             First Name<span className="form_label"></span>
             <input
-              {...register('firstName', { required: true })}
+              {...register('firstname', {
+                required: 'First Name is required',
+                minLength: {
+                  value: 2,
+                  message: 'First name must be at least 2 characters',
+                },
+                maxLength: {
+                  value: 15,
+                  message: 'First name must be at most 15 characters',
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9]+$/,
+                  message:
+                    'First name must contain only alphanumeric characters.',
+                },
+              })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
+              placeholder="Enter your first name"
             />
-            {errors.firstName && (
-              <span className="text-red-400">This field is required</span>
+            {errors.firstname && (
+              <span className="text-red-400">{errors.firstname?.message}</span>
             )}
           </label>
 
           <label className="text-sm  text-left py-1 text-slate-900">
             Last Name<span className="form_label"></span>
             <input
-              {...register('lastName', { required: true })}
+              {...register('lastname', {
+                required: 'Last Name is required',
+                minLength: {
+                  value: 2,
+                  message: 'Last name must be at least 2 characters',
+                },
+                maxLength: {
+                  value: 15,
+                  message: 'Last name must be at most 15 characters',
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9]+$/,
+                  message:
+                    'Last name must contain only alphanumeric characters.',
+                },
+              })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
+              placeholder="Enter your last name"
             />
-            {errors.lastName && (
-              <span className="text-red-400">This field is required</span>
+            {errors.lastname && (
+              <span className="text-red-400">{errors.lastname?.message}</span>
             )}
           </label>
-
+          <label className="text-sm text-left py-1 text-slate-900">
+            Email<span className="form_label"></span>
+            <input
+              {...register('email', {
+                required: true,
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              })}
+              className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
+              type="email"
+              placeholder="Enter your email"
+            />
+            {errors.email && (
+              <span className="text-red-400">
+                Please enter a valid email address
+              </span>
+            )}
+          </label>
           <label className="text-sm text-left py-1 text-slate-900">
             User Name<span className="form_label"></span>
             <input
-              {...register('username', { required: true })}
+              {...register('username', {
+                required: 'Username is required',
+                minLength: {
+                  value: 6,
+                  message: 'Username is too short - should be 6 chars minimum',
+                },
+                maxLength: {
+                  value: 30,
+                  message: 'Username is too long - should be 30 chars maximum',
+                },
+                pattern: {
+                  value: /^[a-z][a-z0-9_]*$/,
+                  message: 'Username must contain only alphanumeric characters',
+                },
+              })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
+              placeholder="Enter your user name"
             />
             {errors.username && (
-              <span className="text-red-400">This field is required</span>
+              <span className="text-red-400">{errors.username?.message}</span>
             )}
           </label>
 
@@ -91,8 +152,15 @@ const SignUp = () => {
             Password<span className="form_label"></span>
             <input
               {...register('password', {
-                required: true,
-                minLength: 6,
+                required: 'Password is required',
+                minLength: {
+                  value: 8,
+                  message: 'The password must be at least 8 characters',
+                },
+                maxLength: {
+                  value: 15,
+                  message: 'The password can be at most 15 characters',
+                },
               })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="password"
@@ -107,7 +175,7 @@ const SignUp = () => {
             )}
           </label>
 
-          <label className="text-sm text-left py-1 text-slate-900">
+          {/* <label className="text-sm text-left py-1 text-slate-900">
             Confirm Password<span className="form_label"></span>
             <input
               {...register('confirmPassword', {
@@ -125,7 +193,7 @@ const SignUp = () => {
               errors.confirmPassword.type === 'validate' && (
                 <span className="text-red-400">Passwords do not match</span>
               )}
-          </label>
+          </label> */}
 
           <button
             type="submit"

@@ -1,17 +1,11 @@
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import './App.css';
-import SignUp from './pages/authentication/SignUp';
+
+import appRouting from './appRouting';
 // import { SignIn } from './pages/authentication/SignIn';
 
 function App() {
-  return (
-    <>
-      <BrowserRouter>
-        <SignUp />
-        {/* <SignIn /> */}
-      </BrowserRouter>
-    </>
-  );
+  return <RouterProvider router={appRouting} />;
 }
 
 export default App;

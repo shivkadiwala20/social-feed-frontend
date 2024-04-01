@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 // import { useDispatch, useSelector } from "react-redux";
 // import { signInHandler } from "../../features/auth/helpers";
 // import Loader from 'react-loader-spinner';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
 export const SignIn = () => {
   const {
     register,
@@ -19,23 +19,20 @@ export const SignIn = () => {
   // const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    if (!data.username || !data.password) {
-      toast.error('All fields are required!', {
-        position: 'top-right',
-        autoClose: 2000,
-      });
-      // alert("hi")
-    } else {
-      // dispatch(signInHandler(data));
-      console.log('data', data);
-    }
+    // if (!data.username || !data.password) {
+    //   toast.error('All fields are required!', {
+    //     position: 'top-right',
+    //     autoClose: 2000,
+    //   });
+    //   // alert("hi")
+    // } else {
+    //   // dispatch(signInHandler(data));
+    //   console.log('data', data);
+    // }
+    console.log(data);
   };
 
   // const guestUser = { username: "chrislevin22", password: "chrislevin@123" };
-
-  const formGuestSignInHandler = () => {
-    // dispatch(signInHandler(guestUser));
-  };
 
   return (
     <div className="flex flex-col justify-items-center items-center">
@@ -57,7 +54,7 @@ export const SignIn = () => {
 
           <div className="mx-auto mt-14 sm:mx-28 sm:mt-16">
             <header className="text-2xl font-bold text-center py-2 mb-2 text-blue-600 sm:hidden">
-              <Link to="/home"> WebOsocial </Link>
+              <Link to="/home"> WebOSocial </Link>
             </header>
             <div className="flex flex-col mx-auto pb-8 shadow-none min-w-max bg-slate-100 rounded-lg">
               <form
@@ -69,8 +66,8 @@ export const SignIn = () => {
                   Sign In
                 </h2>
 
-                <label className="text-sm py-1 text-slate-900">
-                  Username<span className="form_label"></span>
+                <label className="text-sm text-left py-1 text-slate-900">
+                  Email<span className="form_label"></span>
                   <input
                     {...register('username')}
                     className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
@@ -80,7 +77,7 @@ export const SignIn = () => {
                 </label>
                 {errors.username && <span>This field is required</span>}
 
-                <label className="relative text-sm py-1 text-slate-900">
+                <label className="relative text-sm text-left py-1 text-slate-900">
                   Password<span className="form_label"></span>
                   <input
                     {...register('password')}
@@ -98,18 +95,10 @@ export const SignIn = () => {
                   Login
                 </button>
 
-                <button
-                  type="button"
-                  className="my-3 text-x cursor-pointer text-center py-1 border-2 font-semibold  text-blue-700 hover:bg-slate-200"
-                  onClick={formGuestSignInHandler}
-                >
-                  Guest Login
-                </button>
-
                 <p className="my-2 text-center text-sm text-slate-800 self-center font-medium">
                   {' '}
-                  New to webOsocial?
-                  <Link className="text-blue-700" to="/signup">
+                  New to webOSocial?
+                  <Link className="text-blue-700" to="/sign-up">
                     {' '}
                     Sign Up{' '}
                   </Link>
@@ -119,7 +108,7 @@ export const SignIn = () => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
