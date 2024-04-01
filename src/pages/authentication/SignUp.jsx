@@ -1,10 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSignUpMutation } from '../../store/apis/authApi';
 import Loader from 'react-spinner-loader';
+import { regex } from '../../utilities/helper';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const SignUp = () => {
   const [signUp, { isLoading }] = useSignUpMutation();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -23,9 +27,17 @@ const SignUp = () => {
     try {
       const response = await signUp(body);
       if (response?.data) {
+        navigate('/');
+        toast.success(response.data.message, {
+          position: 'top-right',
+          autoClose: 1000,
+        });
         console.log(response.data);
       } else {
-        console.log(response.error);
+        toast.error(response.error.data.message, {
+          position: 'top-right',
+          autoClose: 1000,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -49,7 +61,7 @@ const SignUp = () => {
         >
           <h2 className="my-6 text-left text-slate-900 text-lg">Sign Up</h2>
 
-          <label className="text-sm text-left py-1 text-slate-900">
+          <label className="text-sm text-left py-1 text-slate-900 max-w-56">
             First Name<span className="form_label"></span>
             <input
               {...register('firstname', {
@@ -77,7 +89,7 @@ const SignUp = () => {
             )}
           </label>
 
-          <label className="text-sm  text-left py-1 text-slate-900">
+          <label className="text-sm  text-left py-1 text-slate-900 max-w-56">
             Last Name<span className="form_label"></span>
             <input
               {...register('lastname', {
@@ -104,24 +116,25 @@ const SignUp = () => {
               <span className="text-red-400">{errors.lastname?.message}</span>
             )}
           </label>
-          <label className="text-sm text-left py-1 text-slate-900">
+          <label className="text-sm text-left py-1 text-slate-900 max-w-56">
             Email<span className="form_label"></span>
             <input
               {...register('email', {
-                required: true,
-                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                required: 'Email is required',
+                pattern: {
+                  value: regex.email,
+                  message: 'Please enter a valid email address',
+                },
               })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="email"
               placeholder="Enter your email"
             />
             {errors.email && (
-              <span className="text-red-400">
-                Please enter a valid email address
-              </span>
+              <span className="text-red-400">{errors.email?.message}</span>
             )}
           </label>
-          <label className="text-sm text-left py-1 text-slate-900">
+          <label className="text-sm text-left py-1 text-slate-900 max-w-56">
             User Name<span className="form_label"></span>
             <input
               {...register('username', {
@@ -148,7 +161,7 @@ const SignUp = () => {
             )}
           </label>
 
-          <label className="text-sm text-left py-1 text-slate-900">
+          <label className="text-sm text-left py-1 text-slate-900 max-w-56">
             Password<span className="form_label"></span>
             <input
               {...register('password', {
@@ -164,9 +177,10 @@ const SignUp = () => {
               })}
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="password"
+              placeholder="Enter your password"
             />
             {errors.password && errors.password.type === 'required' && (
-              <span className="text-red-400">This field is required</span>
+              <span className="text-red-400">{errors.password?.message}</span>
             )}
             {errors.password && errors.password.type === 'minLength' && (
               <span className="text-red-400">
@@ -197,7 +211,7 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="my-3 text-x cursor-pointer text-center py-1 border2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+            className="my-3 text-x cursor-pointer text-center py-1 border2 bg-blue-600   hover:bg-blue-700 text-white font-semibold  rounded-xl"
           >
             Sign Up
           </button>
