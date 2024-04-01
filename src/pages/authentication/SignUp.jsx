@@ -1,21 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
+import { useRegisterMutation } from '../../store/apis/authApi';
 const SignUp = () => {
+  const { data, isLoading, isSuccess, isError } = useRegisterMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+  } = useForm({
+    mode: 'onBlur',
+  });
 
   const onSubmit = (data) => {
-    console.log(data); // Log form data on submit
+    {
+      isLoading && <p>Loading...</p>;
+    }
+    {
+      isSuccess && <p>Success</p>;
+    }
+    const body = {
+      ...data,
+      isPrivate: true,
+    };
+    try {
+      const response = register(body);
+      if (response.data) {
+        console.log(response.data);
+      } else {
+        console.log(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const password = watch('password'); // Watch the 'password' input value
-
+  const password = watch('password');
   return (
     <div className="flex flex-col mt-4">
       <header className="place-self-center text-xl font-bold flex py-4 text-blue-600">
@@ -26,7 +47,7 @@ const SignUp = () => {
         <form
           className="mx-8 flex flex-col"
           onSubmit={handleSubmit(onSubmit)} // Handle form submission
-          noValidate // Disable browser validation
+          noValidate
         >
           <h2 className="my-6 text-left text-slate-900 text-lg">Sign Up</h2>
 
@@ -37,7 +58,9 @@ const SignUp = () => {
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
             />
-            {errors.firstName && <span>This field is required</span>}
+            {errors.firstName && (
+              <span className="text-red-400">This field is required</span>
+            )}
           </label>
 
           <label className="text-sm  text-left py-1 text-slate-900">
@@ -47,7 +70,9 @@ const SignUp = () => {
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
             />
-            {errors.lastName && <span>This field is required</span>}
+            {errors.lastName && (
+              <span className="text-red-400">This field is required</span>
+            )}
           </label>
 
           <label className="text-sm text-left py-1 text-slate-900">
@@ -57,7 +82,9 @@ const SignUp = () => {
               className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
               type="text"
             />
-            {errors.username && <span>This field is required</span>}
+            {errors.username && (
+              <span className="text-red-400">This field is required</span>
+            )}
           </label>
 
           <label className="text-sm text-left py-1 text-slate-900">
@@ -71,10 +98,12 @@ const SignUp = () => {
               type="password"
             />
             {errors.password && errors.password.type === 'required' && (
-              <span>This field is required</span>
+              <span className="text-red-400">This field is required</span>
             )}
             {errors.password && errors.password.type === 'minLength' && (
-              <span>Password must be at least 6 characters long</span>
+              <span className="text-red-400">
+                Password must be at least 6 characters long
+              </span>
             )}
           </label>
 
@@ -90,11 +119,11 @@ const SignUp = () => {
             />
             {errors.confirmPassword &&
               errors.confirmPassword.type === 'required' && (
-                <span>This field is required</span>
+                <span className="text-red-400">This field is required</span>
               )}
             {errors.confirmPassword &&
               errors.confirmPassword.type === 'validate' && (
-                <span>Passwords do not match</span>
+                <span className="text-red-400">Passwords do not match</span>
               )}
           </label>
 
