@@ -1,13 +1,15 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import {
   Bars3Icon,
-  BellIcon,
   UserCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from 'react-router-dom';
 import './home.css';
+import CreatePostModal from '../../components/CreatePostModal';
+import CreateProfileModal from '../../components/CreateProfileModal';
+// import { useGetUserQuery } from '../../store/apis/userApi';
 const navigation = [{ name: 'Feed', href: '#', current: true }];
 
 function classNames(...classes) {
@@ -15,6 +17,25 @@ function classNames(...classes) {
 }
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    console.log('closeModal');
+    setIsModalOpen(false);
+  };
+
+  const openProfileModal = () => {
+    console.log('sdjkfjkd');
+    setIsProfileModalOpen(true);
+  };
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false);
+  };
   return (
     <Disclosure as="nav" className="bg-blue-600 w-full">
       {({ open }) => (
@@ -59,13 +80,14 @@ export default function Home() {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="hidden xl:block my-8 mx-0 p-2 bg-gray-900 text-white rounded-[10rem] w-full text-x cursor-pointer text-center 
+                  font-semibold text-white bg-blue-600 hover:bg-blue-800"
+                  onClick={openModal}
                 >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  Create Post
                 </button>
+
+                <CreatePostModal isOpen={isModalOpen} onClose={closeModal} />
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -91,33 +113,24 @@ export default function Home() {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}
-                          >
-                            Your Profile
-                          </a>
+                          <>
+                            <button
+                              href="#"
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700'
+                              )}
+                              onClick={openProfileModal}
+                            >
+                              Your Profile
+                            </button>
+                          </>
                         )}
                       </Menu.Item>
+
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
+                          <button
                             href="#"
                             className={classNames(
                               active ? 'bg-gray-100' : '',
@@ -125,7 +138,7 @@ export default function Home() {
                             )}
                           >
                             Sign out
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>
@@ -134,6 +147,11 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <CreateProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={closeProfileModal}
+          />
 
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">

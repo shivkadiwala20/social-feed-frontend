@@ -71,3 +71,17 @@ export const AsideRight = () => {
     </aside>
   );
 };
+
+
+import CreatePostModal from './CreatePostModal';
+
+export default function Home() {
+
+
+  return (
+    <div>
+      {/* Your existing content */}
+      
+    </div>
+  );
+}
