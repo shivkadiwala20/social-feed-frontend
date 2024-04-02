@@ -2,7 +2,7 @@
 import { apiInterFace } from './apiInterFace';
 
 export const userApi = apiInterFace.injectEndpoints({
-    // reducerPath: 'userApi',
+    reducerPath: 'userApi',
     endpoints: (builder) => ({
         getUser: builder.query({
             query: () => ({

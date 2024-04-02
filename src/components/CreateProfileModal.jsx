@@ -35,7 +35,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
     const response = await updateUser(updatedData);
     console.log(response);
     if (response.data) {
-      setIsEditProfile(true);
+      setIsEditProfile(false);
     }
   };
   const closeHandler = () => {
@@ -64,7 +64,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={closeHandler}
       >
-        <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="flex items-center  justify-center min-h-screen px-4">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -87,39 +87,25 @@ export default function CreateProfileModal({ isOpen, onClose }) {
             leaveTo="opacity-0 scale-95"
           >
             <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="px-6 py-4">
-                  <div className="mb-4">
-                    <label
-                      htmlFor="firstName"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      First Name
-                    </label>
-                    <div>
-                      {isEditProfile ? (
-                        <input
-                          type="text"
-                          placeholder="First Name"
-                          className="w-full border border-gray-300 p-2 rounded-lg"
-                          {...register('firstname', {
-                            required: 'First Name is required',
-                          })}
-                        />
-                      ) : (
-                        <div>{data ? data.data.firstname : ''}</div>
-                      )}
-                    </div>
-                    {/* <span>{  }</span> */}
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="lastName"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Last Name
-                    </label>
-                    {isEditProfile ? (
+              {isEditProfile ? (
+                <>
+                  <div className="px-6 py-4">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <label> First Name</label>
+                      <input
+                        type="text"
+                        placeholder="First Name"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
+                        {...register('firstname', {
+                          required: 'First Name is required',
+                        })}
+                      />
+                      <label
+                        htmlFor="lastName"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Last Name
+                      </label>
                       <input
                         type="text"
                         placeholder="Last Name"
@@ -128,18 +114,12 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                           required: 'Last Name is required',
                         })}
                       />
-                    ) : (
-                      <div>{data ? data.data.lastname : ''}</div>
-                    )}
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="email"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Email
-                    </label>
-                    {isEditProfile ? (
+                      <label
+                        htmlFor="email"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Email
+                      </label>
                       <input
                         type="email"
                         placeholder="Email"
@@ -148,18 +128,13 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                           required: 'Email is required',
                         })}
                       />
-                    ) : (
-                      <div>{data ? data.data.email : ''}</div>
-                    )}
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="username"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Username
-                    </label>
-                    {isEditProfile ? (
+                      <label
+                        htmlFor="username"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Username
+                      </label>
+
                       <input
                         type="text"
                         placeholder="Username"
@@ -168,33 +143,82 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                           required: 'Username is required',
                         })}
                       />
-                    ) : (
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        onClick={handleButtonClick}
+                      >
+                        Save
+                      </button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="px-6 py-4">
+                    <div className="mb-4">
+                      <label
+                        htmlFor="firstName"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        First Name
+                      </label>
+                      <div>
+                        <div>{data ? data.data.firstname : ''}</div>
+                      </div>
+                      {/* <span>{  }</span> */}
+                    </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="lastName"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Last Name
+                      </label>
+                      <div>{data ? data.data.lastname : ''}</div>
+                    </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="email"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Email
+                      </label>
+                      <div>{data ? data.data.email : ''}</div>
+                    </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="username"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Username
+                      </label>
                       <div>{data ? data.data.username : ''}</div>
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <button
+                      type="submit"
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      onClick={handleButtonClick}
+                    >
+                      {isEditProfile ? 'Save' : 'Edit'}
+                    </button>
+                    {isEditProfile ? (
+                      <button
+                        type="button"
+                        className="inline-flex justify-center mx-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        onClick={() => setIsEditProfile(false)}
+                      >
+                        Cancel
+                      </button>
+                    ) : (
+                      ''
                     )}
                   </div>
-                </div>
-
-                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    onClick={handleButtonClick}
-                  >
-                    {isEditProfile ? 'Save' : 'Edit'}
-                  </button>
-                  {isEditProfile ? (
-                    <button
-                      type="button"
-                      className="inline-flex justify-center mx-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      onClick={() => setIsEditProfile(false)}
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </form>
+                </>
+              )}
             </div>
           </Transition.Child>
         </div>
