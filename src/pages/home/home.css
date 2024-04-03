@@ -1,4 +1,5 @@
-#root{
-    padding: 0px;
-    max-width: 100%;
+.home {
+  display: flex !important;
+  justify-content: center !important;
+  justify-content: flex-end !important;
 }

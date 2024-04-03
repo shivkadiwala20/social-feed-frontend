@@ -1,29 +1,35 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useLayoutEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
 import { useGetUserQuery, useUpdateUserMutation } from '../store/apis/userApi';
+import { useSelector } from 'react-redux';
 // import { useSelector } from 'react-redux';
 
 export default function CreateProfileModal({ isOpen, onClose }) {
-  //   console.log({ isOpen });
   const { data } = useGetUserQuery();
-  const [updateUser] = useUpdateUserMutation();
-  // const [newData, setNewData] = useState({});
-  // console.log(newData);
-  const [updatedData, setUpdatedData] = useState({});
+  // console.log('backendData', data);
 
+  const [userData, setUserData] = useState();
+  console.log('userData', userData);
+  const [updatedData, setUpdatedData] = useState();
+  const [updateUser] = useUpdateUserMutation();
+  useLayoutEffect(() => {
+    setUserData(data?.data);
+  }, [data]);
+  console.log('updatedddData', updatedData);
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      firstname: data ? data.data.firstname : '',
-      lastname: data ? data.data.lastname : '',
-      email: data ? data.data.email : '',
-      username: data ? data.data.username : '',
+      firstname: userData ? userData.firstname : '',
+      lastname: userData ? userData.lastname : '',
+      email: userData ? userData.email : '',
+      username: userData ? userData.username : '',
     },
   });
 
   const onSubmit = async (submittedData) => {
     // console.log(data);
     // onClose();
+    console.log('submittedData', { submittedData });
     const body = {
       ...submittedData,
       isPrivate: true,
@@ -35,7 +41,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
     const response = await updateUser(updatedData);
     console.log(response);
     if (response.data) {
-      setIsEditProfile(true);
+      console.log('data updated');
     }
   };
   const closeHandler = () => {
@@ -107,7 +113,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                           })}
                         />
                       ) : (
-                        <div>{data ? data.data.firstname : ''}</div>
+                        <div>{userData ? userData.firstname : ''}</div>
                       )}
                     </div>
                     {/* <span>{  }</span> */}
@@ -129,7 +135,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                         })}
                       />
                     ) : (
-                      <div>{data ? data.data.lastname : ''}</div>
+                      <div>{userData ? userData.lastname : ''}</div>
                     )}
                   </div>
                   <div className="mb-4">
@@ -149,7 +155,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                         })}
                       />
                     ) : (
-                      <div>{data ? data.data.email : ''}</div>
+                      <div>{userData ? userData.email : ''}</div>
                     )}
                   </div>
                   <div className="mb-4">
@@ -169,7 +175,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                         })}
                       />
                     ) : (
-                      <div>{data ? data.data.username : ''}</div>
+                      <div>{userData ? userData.username : ''}</div>
                     )}
                   </div>
                 </div>

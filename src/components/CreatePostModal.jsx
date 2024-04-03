@@ -1,20 +1,23 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { BsFillImageFill } from 'react-icons/bs';
+
 export default function CreatePostModal({ isOpen, onClose }) {
-  const [postContent, setPostContent] = useState('');
+  const [postTitle, setPostTitle] = useState('');
+  const [postDescription, setPostDescription] = useState('');
   const [image, setImage] = useState(null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(file);
+      setImage(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setPostContent('');
+    setPostTitle('');
+    setPostDescription('');
     setImage(null);
     onClose();
   };
@@ -52,14 +55,24 @@ export default function CreatePostModal({ isOpen, onClose }) {
               <form onSubmit={handleSubmit}>
                 <div className="px-6 py-4">
                   <div className="mb-4">
-                    <textarea
-                      value={postContent}
-                      onChange={(e) => setPostContent(e.target.value)}
-                      className="w-full h-20 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                      placeholder="What's happening?"
+                    <input
+                      type="text"
+                      value={postTitle}
+                      onChange={(e) => setPostTitle(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      placeholder="Title"
                     />
                   </div>
                   <div className="mb-4">
+                    <input
+                      type="text"
+                      value={postDescription}
+                      onChange={(e) => setPostDescription(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      placeholder="Description"
+                    />
+                  </div>
+                  <div className="mb-4 flex">
                     <input
                       type="file"
                       accept="image/*"
@@ -71,10 +84,15 @@ export default function CreatePostModal({ isOpen, onClose }) {
                       htmlFor="image-upload"
                       className="cursor-pointer text-blue-500"
                     >
-                      Upload Image
-                      <BsFillImageFill className="text-2xl mt-1 text-blue-700 cursor-pointer" />
+                      <BsFillImageFill className="text-2xl mb-4 mr-6 text-blue-700 cursor-pointer" />
                     </label>
-                    {image && <span className="ml-2">{image.name}</span>}
+                    {image && (
+                      <img
+                        src={image}
+                        alt="Uploaded Image"
+                        className="mt-2 flex w-32 h-32  object-cover"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -84,6 +102,13 @@ export default function CreatePostModal({ isOpen, onClose }) {
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     Post
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500  ml-2"
+                  >
+                    Close
                   </button>
                 </div>
               </form>
