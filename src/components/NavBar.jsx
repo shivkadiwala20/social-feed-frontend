@@ -9,10 +9,8 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 import CreateProfileModal from '../components/CreateProfileModal';
-import { useGetPostsQuery } from '../store/apis/postApi';
 
-// import { useGetUserQuery } from '../../store/apis/userApi';
-const navigation = [{ name: 'Feed', href: '#', current: true }];
+const navigation = [{ name: 'Feed', current: true }];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -22,9 +20,6 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-
-  const { data } = useGetPostsQuery();
-  console.log(data);
 
   const openProfileModal = () => {
     console.log('sdjkfjkd');
@@ -57,24 +52,27 @@ export default function NavBar() {
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start w-full">
                   <div className="flex flex-shrink-0 items-center">
-                    <NavLink className="text-white">WebOSocial </NavLink>
+                    <NavLink to="/home" className="text-white">
+                      WebOSocial{' '}
+                    </NavLink>
                   </div>
                   <div className="hidden sm:ml-6 sm:block w-full">
                     <div className="flex space-x-4">
                       {navigation.map((item) => (
-                        <a
+                        <NavLink
                           key={item.name}
-                          href={item.href}
+                          to="/home"
                           className={classNames(
                             item.current
                               ? 'bg-gray-900 text-white'
                               : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
+                          activeClassName="bg-gray-900 text-white"
                           aria-current={item.current ? 'page' : undefined}
                         >
                           {item.name}
-                        </a>
+                        </NavLink>
                       ))}
                     </div>
                   </div>

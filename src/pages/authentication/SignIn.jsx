@@ -10,13 +10,15 @@ import Loader from 'react-spinner-loader';
 import { setCookie } from '../../utilities/helper';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useContext } from 'react';
+import { Auth } from '../../context/AuthContext';
 export const SignIn = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  // const { handleLoggedInUser } = useContext(Auth);
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   // const {
@@ -40,6 +42,7 @@ export const SignIn = () => {
     try {
       const response = await login(submittedData);
       if (response?.data) {
+        // handleLoggedInUser(response?.data.data);
         setCookie(response.data.data);
         navigate('home');
         toast.success('You have Sign In Successfully!!', {

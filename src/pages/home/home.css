@@ -1,5 +1,6 @@
 .home {
-  display: flex !important;
-  justify-content: center !important;
-  justify-content: flex-end !important;
+  display: flex ;
+  justify-content: center ;
+  justify-content: flex-end ;
+  margin-right: 55px;
 }

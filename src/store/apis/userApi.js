@@ -2,11 +2,18 @@
 import { apiInterFace } from './apiInterFace';
 
 export const userApi = apiInterFace.injectEndpoints({
-  // reducerPath: 'userApi',
+  reducerPath: 'userApi',
   endpoints: (builder) => ({
     getUser: builder.query({
       query: () => ({
         url: '/users/get-user',
+        method: 'GET',
+      }),
+      provideTags: ['User'],
+    }),
+    getAllUser: builder.query({
+      query: () => ({
+        url: '/users/get-all-user',
         method: 'GET',
       }),
       provideTags: ['User'],
@@ -24,4 +31,4 @@ export const userApi = apiInterFace.injectEndpoints({
     }),
   }),
 });
-export const { useGetUserQuery, useUpdateUserMutation } = userApi;
+export const { useGetUserQuery,useGetAllUserQuery ,useUpdateUserMutation } = userApi;

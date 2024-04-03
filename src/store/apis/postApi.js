@@ -3,40 +3,46 @@ import { apiInterFace } from './apiInterFace';
 const postApi = apiInterFace.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
-      query: () => ({
-        url: '/posts/get-feed-posts?page=${pageNumber}',
-        method: 'GET',
-      }),
+      query: (pageNumber) => {
+        return {
+          url: `/posts/get-feed-posts?page=${pageNumber}`,
+          method: 'GET',
+        };
+      },
       providesTags: ['Post'],
     }),
     createPost: builder.mutation({
-      query: (post) => ({
-        url: '/posts/create-post',
-        method: 'POST',
-        body: post,
-      }),
+      query: (data) => {
+        console.log("data",data)
+        const formData = new FormData();
+        for (const key in data) {
+          formData.append(key, data[key]);
+        }
+
+        return {
+          url: '/posts/create-post',
+          method: 'POST',
+          body: formData,
+        };
+      },
       invalidatesTags: ['Post'],
     }),
-    updatePost: builder.mutation({
-      query: (post) => ({
-        url: `/posts/${post.id}`,
-        method: 'PUT',
-        body: post,
-      }),
+
+    getPostImage: builder.query({
+      query: (postId) => {
+        console.log("postId",postId)
+        return {
+          url: `/posts/get-feed-image?postId=${postId}`,
+          method: 'GET',
+        };
+      },
       invalidatesTags: ['Post'],
     }),
-    deletePost: builder.mutation({
-      query: (id) => ({
-        url: `/posts/${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Post'],
-    }),
+
   }),
 });
 export const {
   useGetPostsQuery,
   useCreatePostMutation,
-  useUpdatePostMutation,
-  useDeletePostMutation,
+  useGetPostImageQuery,
 } = postApi;

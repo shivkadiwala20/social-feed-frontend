@@ -18,5 +18,5 @@ export const apiInterFace = createApi({
     reducerPath: 'apiInterface',
     baseQuery:baseQuery,
     endpoints:  ()=>({}),
-    tagTypes:['User']
+    tagTypes:['User','Post']
 });

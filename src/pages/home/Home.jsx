@@ -192,17 +192,41 @@
 //   );
 // }
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../../components/NavBar';
 import { Post } from '../../components/Post';
 import CreatePostModal from '../../components/CreatePostModal';
-const Home = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+import './home.css';
 
+import { useGetPostsQuery } from '../../store/apis/postApi';
+import Profile from '../profile/Profile';
+const Home = () => {
+  const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(1);
+  const postRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [posts, setPosts] = useState([]);
+  console.log('postts', posts);
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    if (isError) {
+      console.log('error', error);
+    }
+  }, [error, isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setPosts(data.data.posts);
+    }
+  }, [data, isSuccess]);
+  const setNewPost = (post) => {
+    console.log('setPost', post);
+    setPosts([post, ...posts]);
+  };
+
+  console.log(data);
   const closeModal = () => {
     console.log('closeModal');
     setIsModalOpen(false);
@@ -216,11 +240,28 @@ const Home = () => {
                     justify-center items-center"
           onClick={openModal}
         >
-          Create Post
+          + Create Post
         </button>
       </div>
-      <CreatePostModal isOpen={isModalOpen} onClose={closeModal} />
-      <Post />
+      <CreatePostModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        setNewPost={setNewPost}
+      />
+      {isLoading && <p>....Loading</p>}
+      {posts?.length === 0 && !isLoading && <p>No posts</p>}
+      {/* {console.log('posttss', posts)} */}
+      {posts?.map((post) => (
+        <Post
+          postRef={postRef}
+          key={post?._id}
+          post_id={post.filePath ? post?._id : undefined}
+          desc={post?.description}
+          title={post?.title}
+          createdAt={post?.createdAt}
+          post={post}
+        />
+      ))}
     </>
   );
 };

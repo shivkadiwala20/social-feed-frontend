@@ -1,66 +1,70 @@
-import { Fragment, useLayoutEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
 import { useGetUserQuery, useUpdateUserMutation } from '../store/apis/userApi';
-import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
 // import { useSelector } from 'react-redux';
 
 export default function CreateProfileModal({ isOpen, onClose }) {
-  const { data } = useGetUserQuery();
-  // console.log('backendData', data);
+  console.log('form Renderd');
+  // const [userData, setUserData] = useState();
+  // console.log('userData', userData);
+  // const [updatedData, setUpdatedData] = useState()
 
-  const [userData, setUserData] = useState();
-  console.log('userData', userData);
-  const [updatedData, setUpdatedData] = useState();
   const [updateUser] = useUpdateUserMutation();
-  useLayoutEffect(() => {
-    setUserData(data?.data);
-  }, [data]);
-  console.log('updatedddData', updatedData);
+  const { data, isLoading } = useGetUserQuery();
+  const userData = !isLoading && data.data;
+
+  // console.log('updatedddData', updatedData);
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      firstname: userData ? userData.firstname : '',
-      lastname: userData ? userData.lastname : '',
-      email: userData ? userData.email : '',
-      username: userData ? userData.username : '',
+      firstname: userData?.firstname,
+      lastname: userData?.lastname,
+      email: userData?.email,
+      username: userData?.username,
     },
   });
 
   const onSubmit = async (submittedData) => {
-    // console.log(data);
-    // onClose();
     console.log('submittedData', { submittedData });
     const body = {
       ...submittedData,
       isPrivate: true,
     };
-    setUpdatedData(body);
-  };
 
-  const updateUserData = async () => {
-    const response = await updateUser(updatedData);
-    console.log(response);
-    if (response.data) {
-      console.log('data updated');
+    const response = await updateUser(body);
+
+    try {
+      console.log(response);
+      if (response.data) {
+        console.log('data updated');
+        onClose();
+        toast.success('Profile Updated Successfully!!', {
+          position: 'top-right',
+          autoClose: 1000,
+        });
+      } else {
+        toast.error(response.error.data.message, {
+          position: 'top-right',
+          autoClose: 1000,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  // const updateUserData = async () => {
+  //   const response = await updateUser(updatedData);
+  //   console.log(response);
+  //   if (response.data) {
+  //     console.log('data updated');
+  //   }
+  // };
   const closeHandler = () => {
     console.log('dsjfjksd');
     onClose();
-  };
-
-  const [isEditProfile, setIsEditProfile] = useState(false);
-  const handleEditProfile = () => {
-    console.log('edit profile');
-    setIsEditProfile(true);
-  };
-
-  const handleButtonClick = () => {
-    if (isEditProfile) {
-      updateUserData();
-    } else {
-      handleEditProfile();
-    }
   };
 
   return (
@@ -103,18 +107,14 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                       First Name
                     </label>
                     <div>
-                      {isEditProfile ? (
-                        <input
-                          type="text"
-                          placeholder="First Name"
-                          className="w-full border border-gray-300 p-2 rounded-lg"
-                          {...register('firstname', {
-                            required: 'First Name is required',
-                          })}
-                        />
-                      ) : (
-                        <div>{userData ? userData.firstname : ''}</div>
-                      )}
+                      <input
+                        type="text"
+                        placeholder="First Name"
+                        className="w-full border border-gray-300 p-2 rounded-lg"
+                        {...register('firstname', {
+                          required: 'First Name is required',
+                        })}
+                      />
                     </div>
                     {/* <span>{  }</span> */}
                   </div>
@@ -125,18 +125,15 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                     >
                       Last Name
                     </label>
-                    {isEditProfile ? (
-                      <input
-                        type="text"
-                        placeholder="Last Name"
-                        className="w-full border border-gray-300 p-2 rounded-lg"
-                        {...register('lastname', {
-                          required: 'Last Name is required',
-                        })}
-                      />
-                    ) : (
-                      <div>{userData ? userData.lastname : ''}</div>
-                    )}
+
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      className="w-full border border-gray-300 p-2 rounded-lg"
+                      {...register('lastname', {
+                        required: 'Last Name is required',
+                      })}
+                    />
                   </div>
                   <div className="mb-4">
                     <label
@@ -145,18 +142,14 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                     >
                       Email
                     </label>
-                    {isEditProfile ? (
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full border border-gray-300 p-2 rounded-lg"
-                        {...register('email', {
-                          required: 'Email is required',
-                        })}
-                      />
-                    ) : (
-                      <div>{userData ? userData.email : ''}</div>
-                    )}
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      className="w-full border border-gray-300 p-2 rounded-lg"
+                      {...register('email', {
+                        required: 'Email is required',
+                      })}
+                    />
                   </div>
                   <div className="mb-4">
                     <label
@@ -165,18 +158,15 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                     >
                       Username
                     </label>
-                    {isEditProfile ? (
-                      <input
-                        type="text"
-                        placeholder="Username"
-                        className="w-full border border-gray-300 p-2 rounded-lg"
-                        {...register('username', {
-                          required: 'Username is required',
-                        })}
-                      />
-                    ) : (
-                      <div>{userData ? userData.username : ''}</div>
-                    )}
+
+                    <input
+                      type="text"
+                      placeholder="Username"
+                      className="w-full border border-gray-300 p-2 rounded-lg"
+                      {...register('username', {
+                        required: 'Username is required',
+                      })}
+                    />
                   </div>
                 </div>
 
@@ -184,21 +174,17 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                   <button
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    onClick={handleButtonClick}
                   >
-                    {isEditProfile ? 'Save' : 'Edit'}
+                    Save
                   </button>
-                  {isEditProfile ? (
-                    <button
-                      type="button"
-                      className="inline-flex justify-center mx-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      onClick={() => setIsEditProfile(false)}
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    ''
-                  )}
+
+                  <button
+                    type="button"
+                    className="inline-flex justify-center mx-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    onClick={() => setIsEditProfile(false)}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </form>
             </div>

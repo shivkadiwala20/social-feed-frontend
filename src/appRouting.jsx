@@ -4,7 +4,6 @@ import SignUp from './pages/authentication/SignUp';
 import Home from './pages/home/Home';
 import Profile from './pages/profile/Profile';
 import Layout from './pages/layouts/Layout';
-import EditProfile from './pages/profile/EditProfile';
 
 const appRouting = createBrowserRouter([
   {
@@ -12,7 +11,7 @@ const appRouting = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: 'sign-in',
+        index: true,
         element: <SignIn />,
       },
       {
@@ -26,10 +25,6 @@ const appRouting = createBrowserRouter([
       {
         path: 'profile',
         element: <Profile />,
-      },
-      {
-        path: 'edit-profile',
-        element: <EditProfile />,
       },
     ],
   },
