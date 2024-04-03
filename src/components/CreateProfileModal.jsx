@@ -1,23 +1,30 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
-import { useGetUserQuery, useUpdateUserMutation } from '../store/apis/userApi';
+import { useUpdateUserMutation } from '../store/apis/userApi';
 import { toast } from 'react-toastify';
 
 // import { useSelector } from 'react-redux';
 
-export default function CreateProfileModal({ isOpen, onClose }) {
+export default function CreateProfileModal({
+  isOpen,
+  onClose,
+  userData,
+  setUserData,
+}) {
   console.log('form Renderd');
   // const [userData, setUserData] = useState();
   // console.log('userData', userData);
   // const [updatedData, setUpdatedData] = useState()
 
   const [updateUser] = useUpdateUserMutation();
-  const { data, isLoading } = useGetUserQuery();
-  const userData = !isLoading && data.data;
+  // const { data, isLoading } = useGetUserQuery();
+
+  // const userData = !isLoading && data.data;
 
   // console.log('updatedddData', updatedData);
-  const { register, handleSubmit } = useForm({
+  console.log('userData', userData);
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       firstname: userData?.firstname,
       lastname: userData?.lastname,
@@ -25,6 +32,15 @@ export default function CreateProfileModal({ isOpen, onClose }) {
       username: userData?.username,
     },
   });
+
+  useEffect(() => {
+    reset({
+      firstname: userData?.firstname,
+      lastname: userData?.lastname,
+      email: userData?.email,
+      username: userData?.username,
+    });
+  }, [userData]);
 
   const onSubmit = async (submittedData) => {
     console.log('submittedData', { submittedData });
@@ -34,10 +50,11 @@ export default function CreateProfileModal({ isOpen, onClose }) {
     };
 
     const response = await updateUser(body);
-
     try {
       console.log(response);
       if (response.data) {
+        console.log('response', response);
+        setUserData(response?.data.data);
         console.log('data updated');
         onClose();
         toast.success('Profile Updated Successfully!!', {
@@ -181,7 +198,7 @@ export default function CreateProfileModal({ isOpen, onClose }) {
                   <button
                     type="button"
                     className="inline-flex justify-center mx-2 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    onClick={() => setIsEditProfile(false)}
+                    onClick={() => closeHandler()}
                   >
                     Cancel
                   </button>

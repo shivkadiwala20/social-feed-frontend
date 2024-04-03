@@ -9,6 +9,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 import CreateProfileModal from '../components/CreateProfileModal';
+import { deleteCookie } from '../utilities/helper';
 
 const navigation = [{ name: 'Feed', current: true }];
 
@@ -30,6 +31,11 @@ export default function NavBar() {
   };
   const closeProfileModal = () => {
     setIsProfileModalOpen(false);
+  };
+
+  const handleSignOut = () => {
+    deleteCookie();
+    navigate('/');
   };
   return (
     <>
@@ -125,6 +131,7 @@ export default function NavBar() {
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
+                              onClick={handleSignOut}
                             >
                               Sign out
                             </button>

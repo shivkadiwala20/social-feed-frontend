@@ -31,7 +31,7 @@ export const Post = ({
   const date = createdAt.split('T')[0].split('-');
   const postCreatedAt = date[2] + ' ' + getMonth + ' ' + date[0];
 
-  const { data } = useGetPostImageQuery('65f3f668299fa9a4d47c2a2f');
+  const { data } = useGetPostImageQuery(post_id, { skip: !post_id });
   console.log(data);
 
   const handleLike = () => {
@@ -56,18 +56,18 @@ export const Post = ({
           >
             {desc}{' '}
           </p>
-          {post?.postImageUrl && (
-            <div
-              className="max-w-3xl max-h-80 mx-auto bg-blue-100 rounded-md cursor-pointer"
-              onClick={() => navigate(`/post/${post.id}`)}
-            >
-              <img
-                //   src={post?.postImageUrl}
-                className="max-w-full max-h-80 rounded-md my-2 mx-auto"
-                alt="avatar"
-              />
-            </div>
-          )}
+
+          <div
+            className="max-w-3xl max-h-80 mx-auto bg-blue-100 rounded-md cursor-pointer"
+            onClick={() => navigate(`/post/${post.id}`)}
+          >
+            <img
+              src={data?.data ? `data:image/png;base64, ${data?.data}` : 'sss'}
+              className="max-w-full max-h-80 rounded-md my-2 mx-auto"
+              alt="avatar"
+            />
+          </div>
+
           <p className="text-sm text-gray-600">{postCreatedAt}</p>
           <div className="flex justify-between pt-8">
             <div className="flex">

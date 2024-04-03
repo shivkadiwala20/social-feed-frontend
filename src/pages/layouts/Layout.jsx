@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <>
       {/* {isLoggedIn && <NavBar />} */}
-      <NavBar />
+
       <Outlet />
     </>
   );

@@ -5,7 +5,7 @@ const postApi = apiInterFace.injectEndpoints({
     getPosts: builder.query({
       query: (pageNumber) => {
         return {
-          url: `/posts/get-feed-posts?page=${pageNumber}`,
+          url: `/posts/get-feed-posts?page=${pageNumber}&isPrivate=true`,
           method: 'GET',
         };
       },
@@ -13,7 +13,7 @@ const postApi = apiInterFace.injectEndpoints({
     }),
     createPost: builder.mutation({
       query: (data) => {
-        console.log("data",data)
+        console.log('data', data);
         const formData = new FormData();
         for (const key in data) {
           formData.append(key, data[key]);
@@ -30,7 +30,7 @@ const postApi = apiInterFace.injectEndpoints({
 
     getPostImage: builder.query({
       query: (postId) => {
-        console.log("postId",postId)
+        console.log('postId', postId);
         return {
           url: `/posts/get-feed-image?postId=${postId}`,
           method: 'GET',
@@ -38,11 +38,11 @@ const postApi = apiInterFace.injectEndpoints({
       },
       invalidatesTags: ['Post'],
     }),
-
   }),
 });
 export const {
   useGetPostsQuery,
+  useLazyGetPostsQuery,
   useCreatePostMutation,
   useGetPostImageQuery,
 } = postApi;
