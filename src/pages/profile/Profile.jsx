@@ -1,22 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
-import { useGetUserQuery } from '../../store/apis/userApi';
+import {
+  useDeleteUserMutation,
+  useGetUserQuery,
+} from '../../store/apis/userApi';
 import CreateProfileModal from '../../components/CreateProfileModal';
 import NavBar from '../../components/NavBar';
 import { Auth } from '../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import CustomDialog from '../../components/CustomDialog';
 import { toast } from 'react-toastify';
+import { deleteCookie } from '../../utilities/helper';
 
 const Profile = () => {
   const { data } = useGetUserQuery();
-  console.log('profileData', data);
+  //console.log('profileData', data);
   const [userData, setUserData] = useState(data?.data);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // const userData = !isLoading && data.data;
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
+  const [deleteUser, { isLoading, isError, error }] = useDeleteUserMutation();
+  //console.log('deletedData', deleteUser);
+
   useEffect(() => {
-    console.log(userData);
+    //console.log(userData);
     setUserData(data?.data);
   }, [data]);
 
@@ -28,19 +35,26 @@ const Profile = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  // Close delete account dialog
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
   };
 
   const { handleLoggedOutUser } = useContext(Auth);
-  const handleDeleteClick = () => {
-    handleLoggedOutUser();
-    Navigate('/');
-    toast.success('You have deleted your account successfully!!', {
-      position: 'top-right',
-      autoClose: 1000,
-    });
+  const handleDeleteClick = async () => {
+    try {
+      // Call the deleteUser mutation
+      await deleteUser().unwrap();
+      // Perform necessary actions after successful deletion
+      deleteCookie();
+      handleLoggedOutUser();
+      toast.success('You have deleted your account successfully!!', {
+        position: 'top-right',
+        autoClose: 1000,
+      });
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      // Handle error appropriately
+    }
   };
 
   return (

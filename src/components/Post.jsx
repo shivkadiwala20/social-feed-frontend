@@ -19,7 +19,7 @@ export const Post = ({
   post,
   username,
 }) => {
-  // console.log('aa araha hai');
+  // //console.log('aa araha hai');
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();

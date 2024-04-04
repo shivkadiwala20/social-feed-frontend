@@ -3,7 +3,7 @@ import React from 'react';
 const CustomDialog = ({ isOpen, onClose, title, message, onConfirm }) => {
   return (
     <div
-      className={`fixed inset-0 overflow-y-auto ${isOpen ? 'visible' : 'invisible'}`}
+      className={`fixed  z-50 inset-0 overflow-y-auto ${isOpen ? 'visible' : 'invisible'}`}
       onClick={onClose}
     >
       <div className="flex items-center justify-center min-h-screen">

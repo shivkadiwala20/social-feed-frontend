@@ -12,9 +12,9 @@ export default function CreateProfileModal({
   userData,
   setUserData,
 }) {
-  console.log('form Renderd');
+  //console.log('form Renderd');
   // const [userData, setUserData] = useState();
-  // console.log('userData', userData);
+  // //console.log('userData', userData);
   // const [updatedData, setUpdatedData] = useState()
 
   const [updateUser] = useUpdateUserMutation();
@@ -22,8 +22,8 @@ export default function CreateProfileModal({
 
   // const userData = !isLoading && data.data;
 
-  // console.log('updatedddData', updatedData);
-  console.log('userData', userData);
+  // //console.log('updatedddData', updatedData);
+  //console.log('userData', userData);
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       firstname: userData?.firstname,
@@ -43,7 +43,7 @@ export default function CreateProfileModal({
   }, [userData]);
 
   const onSubmit = async (submittedData) => {
-    console.log('submittedData', { submittedData });
+    //console.log('submittedData', { submittedData });
     const body = {
       ...submittedData,
       isPrivate: true,
@@ -51,11 +51,11 @@ export default function CreateProfileModal({
 
     const response = await updateUser(body);
     try {
-      console.log(response);
+      //console.log(response);
       if (response.data) {
-        console.log('response', response);
+        //console.log('response', response);
         setUserData(response?.data.data);
-        console.log('data updated');
+        //console.log('data updated');
         onClose();
         toast.success('Profile Updated Successfully!!', {
           position: 'top-right',
@@ -68,19 +68,19 @@ export default function CreateProfileModal({
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
   // const updateUserData = async () => {
   //   const response = await updateUser(updatedData);
-  //   console.log(response);
+  //   //console.log(response);
   //   if (response.data) {
-  //     console.log('data updated');
+  //     //console.log('data updated');
   //   }
   // };
   const closeHandler = () => {
-    console.log('dsjfjksd');
+    //console.log('dsjfjksd');
     onClose();
   };
 

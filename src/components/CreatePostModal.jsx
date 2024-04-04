@@ -27,27 +27,28 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    setImage('');
-    reset();
-    onClose();
+  const onSubmit = async (submittedData) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => {
-      // console.log(reader.result);
-      data.image = reader.result;
+      // //console.log(reader.result);
+      submittedData.image = reader.result;
     });
     reader.readAsDataURL(image);
-    console.log('onSubmitData', { data });
+    //console.log('onSubmitData', { submittedData });
 
     const body = {
-      ...data,
+      ...submittedData,
       image: image,
       isPrivate: false,
     };
 
-    const response = createPost(body);
-    console.log(response);
-    setNewPost(response.data.data);
+    const response = await createPost(body);
+    // //console.log(response);
+    setNewPost(response?.data?.data);
+
+    setImage('');
+    reset();
+    onClose();
   };
 
   return (
@@ -92,7 +93,7 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
                         {...register('image', {
                           validate: (value) => {
                             if (!image) {
-                              console.log(value);
+                              //console.log(value);
                               return 'Image is required';
                             } else {
                               return true;

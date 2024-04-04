@@ -13,8 +13,8 @@ import Profile from '../profile/Profile';
 const Home = () => {
   const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(1);
   const [refetchPost] = useLazyGetPostsQuery();
-  console.log('refetchPost', refetchPost);
-  console.log('postData', data?.data);
+  //console.log('refetchPost', refetchPost);
+  //console.log('postData', data?.data);
   const postRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -28,26 +28,26 @@ const Home = () => {
 
   useEffect(() => {
     if (isError) {
-      console.log('error', error);
+      //console.log('error', error);
     }
   }, [error, isError]);
 
   useEffect(() => {
     if (isSuccess) {
       const postData = data?.data?.data || [];
-      console.log('mil raha hai', postData);
+      //console.log('mil raha hai', postData);
       setPosts((prevPosts) => [...prevPosts, ...postData]); // Append new posts to existing ones
       setHasMore(data?.data?.nextPage); // Set hasMore based on whether there is a next page
     }
   }, [data, isSuccess]);
 
   const setNewPost = (post) => {
-    console.log('setPost', post);
+    //console.log('setPost', post);
     setPosts([post, ...posts]);
   };
 
   const closeModal = () => {
-    console.log('closeModal');
+    //console.log('closeModal');
     setIsModalOpen(false);
   };
 
@@ -95,7 +95,7 @@ const Home = () => {
     // Implement your logic to fetch more posts here
     // Example:
     const response = refetchPost(pageNumber);
-    console.log('bhai mila ki nai', response);
+    //console.log('bhai mila ki nai', response);
     if (!response.ok) {
       throw new Error('Failed to fetch more posts');
     }

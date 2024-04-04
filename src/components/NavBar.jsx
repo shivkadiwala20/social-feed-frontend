@@ -26,7 +26,7 @@ export default function NavBar() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   // const openProfileModal = () => {
-  //   console.log('sdjkfjkd');
+  //   //console.log('sdjkfjkd');
   //   setIsProfileModalOpen(true);
   // };
   const handleProfileClick = () => {
@@ -54,6 +54,13 @@ export default function NavBar() {
   };
   return (
     <>
+      <CustomDialog
+        isOpen={isSignOutDialogOpen}
+        onClose={closeSignOutDialog}
+        title="Sign Out"
+        message="Are you sure you want to sign out?"
+        onConfirm={handleSignOut}
+      />
       <Disclosure as="nav" className="bg-blue-600 w-full">
         {({ open }) => (
           <>
@@ -89,7 +96,7 @@ export default function NavBar() {
                               : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )}
-                          activeClassName="bg-gray-900 text-white"
+                          activeclassname="bg-gray-900 text-white"
                           aria-current={item.current ? 'page' : undefined}
                         >
                           {item.name}
@@ -163,13 +170,7 @@ export default function NavBar() {
               isOpen={isProfileModalOpen}
               onClose={closeProfileModal}
             /> */}
-            <CustomDialog
-              isOpen={isSignOutDialogOpen}
-              onClose={closeSignOutDialog}
-              title="Sign Out"
-              message="Are you sure you want to sign out?"
-              onConfirm={handleSignOut}
-            />
+
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-1 px-2 pb-3 pt-2">
                 {navigation.map((item) => (

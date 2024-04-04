@@ -5,7 +5,7 @@ import { Auth } from '../context/AuthContext';
 // eslint-disable-next-line react/prop-types
 function NonAuthRoutes({ children }) {
   const { isLoggedIn } = useContext(Auth);
-  console.log(isLoggedIn);
+  //console.log(isLoggedIn);
 
   if (isLoggedIn) {
     return <Navigate to="/home" />;

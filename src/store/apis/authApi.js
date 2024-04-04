@@ -7,12 +7,12 @@ export const authApi = apiInterFace.injectEndpoints({
   endpoints: (builder) => ({
     signUp: builder.mutation({
       query: (user) => {
-        console.log({user})
-       return {
-        url: '/sign-up',
-        method: 'POST',
-        body: user,
-       }
+        //console.log({user})
+        return {
+          url: '/sign-up',
+          method: 'POST',
+          body: user,
+        };
       },
       inValidatesTags: ['User'],
     }),
@@ -20,7 +20,7 @@ export const authApi = apiInterFace.injectEndpoints({
       query: (user) => ({
         url: '/login',
         method: 'POST',
-        body:user,
+        body: user,
       }),
       invalidatesTags: ['User'],
     }),

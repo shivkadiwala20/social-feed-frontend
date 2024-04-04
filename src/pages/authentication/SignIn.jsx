@@ -36,9 +36,9 @@ export const SignIn = () => {
     //   // alert("hi")
     // } else {
     //   // dispatch(signInHandler(data));
-    //   console.log('data', data);
+    //   //console.log('data', data);
     // }
-    // console.log(data);
+    // //console.log(data);
     try {
       const response = await login(submittedData);
       if (response?.data) {
@@ -49,7 +49,7 @@ export const SignIn = () => {
           position: 'top-right',
           autoClose: 1000,
         });
-        console.log(response.data);
+        //console.log(response.data);
       } else {
         toast.error(response.error.data.message, {
           position: 'top-right',
@@ -57,7 +57,7 @@ export const SignIn = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

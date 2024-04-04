@@ -18,12 +18,12 @@ const SignUp = () => {
   });
 
   const onSubmit = async (submittedData) => {
-    console.log(submittedData);
+    //console.log(submittedData);
     const body = {
       ...submittedData,
       isPrivate: true,
     };
-    console.log('body', body);
+    //console.log('body', body);
     try {
       const response = await signUp(body);
       if (response?.data) {
@@ -32,7 +32,7 @@ const SignUp = () => {
           position: 'top-right',
           autoClose: 1000,
         });
-        console.log(response.data);
+        //console.log(response.data);
       } else {
         toast.error(response.error.data.message, {
           position: 'top-right',
@@ -40,7 +40,7 @@ const SignUp = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

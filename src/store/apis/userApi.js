@@ -20,7 +20,7 @@ export const userApi = apiInterFace.injectEndpoints({
     }),
     updateUser: builder.mutation({
       query: (data) => {
-        console.log('updateData', data);
+        //console.log('updateData', data);
         return {
           url: '/users/update-user',
           method: 'PUT',
@@ -29,6 +29,18 @@ export const userApi = apiInterFace.injectEndpoints({
       },
       invalidatesTags: ['User'],
     }),
+    deleteUser: builder.mutation({
+      query: () => ({
+        url: `/users/delete-user`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
-export const { useGetUserQuery,useGetAllUserQuery ,useUpdateUserMutation } = userApi;
+export const {
+  useGetUserQuery,
+  useGetAllUserQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = userApi;

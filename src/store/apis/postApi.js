@@ -13,7 +13,7 @@ const postApi = apiInterFace.injectEndpoints({
     }),
     createPost: builder.mutation({
       query: (data) => {
-        console.log('data', data);
+        //console.log('data', data);
         const formData = new FormData();
         for (const key in data) {
           formData.append(key, data[key]);
@@ -30,7 +30,7 @@ const postApi = apiInterFace.injectEndpoints({
 
     getPostImage: builder.query({
       query: (postId) => {
-        console.log('postId', postId);
+        //console.log('postId', postId);
         return {
           url: `/posts/get-feed-image?postId=${postId}`,
           method: 'GET',
