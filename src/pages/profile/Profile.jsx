@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useGetUserQuery } from '../../store/apis/userApi';
 import CreateProfileModal from '../../components/CreateProfileModal';
 import NavBar from '../../components/NavBar';
+import { Auth } from '../../context/AuthContext';
+import { Navigate } from 'react-router-dom';
+import CustomDialog from '../../components/CustomDialog';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
   const { data } = useGetUserQuery();
   console.log('profileData', data);
   const [userData, setUserData] = useState(data?.data);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // const userData = !isLoading && data.data;
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
@@ -19,14 +24,27 @@ const Profile = () => {
     setIsProfileModalOpen(true);
   };
 
-  const handleDeleteAccount = () => {
-    // Add your logic for deleting the account here
-    console.log('Deleting account...');
+  const openDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Close delete account dialog
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const { handleLoggedOutUser } = useContext(Auth);
+  const handleDeleteClick = () => {
+    handleLoggedOutUser();
+    Navigate('/');
+    toast.success('You have deleted your account successfully!!', {
+      position: 'top-right',
+      autoClose: 1000,
+    });
   };
 
   return (
     <>
-  
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
           <div className="px-6 py-4">
@@ -62,12 +80,19 @@ const Profile = () => {
             <button
               type="button"
               className="text-red-500 hover:text-red-700 text-sm font-medium"
-              onClick={handleDeleteAccount}
+              onClick={openDeleteDialog}
             >
               Delete Account
             </button>
           </div>
         </div>
+        <CustomDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={closeDeleteDialog}
+          title="Delete Account"
+          message="Are you sure you want to delete your account? This action cannot be undone."
+          onConfirm={handleDeleteClick}
+        />
         <CreateProfileModal
           isOpen={isProfileModalOpen}
           onClose={() => setIsProfileModalOpen(false)}

@@ -3,9 +3,9 @@ import { apiInterFace } from './apiInterFace';
 const postApi = apiInterFace.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
-      query: (pageNumber) => {
+      query: (page) => {
         return {
-          url: `/posts/get-feed-posts?page=${pageNumber}&isPrivate=true`,
+          url: `/posts/get-feed-posts?page=${page}`,
           method: 'GET',
         };
       },

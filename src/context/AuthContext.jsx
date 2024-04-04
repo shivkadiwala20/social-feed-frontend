@@ -24,10 +24,6 @@ const Context = ({ children }) => {
   const handleLoggedOutUser = () => {
     setIsLoggedIn(false);
     deleteCookie();
-    toast.success('You have Sign Out Successfully!!', {
-      position: 'top-right',
-      autoClose: 1000,
-    });
   };
 
   return (

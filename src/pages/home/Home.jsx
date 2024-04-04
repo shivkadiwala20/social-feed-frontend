@@ -1,14 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../../components/NavBar';
 import { Post } from '../../components/Post';
 import CreatePostModal from '../../components/CreatePostModal';
 import './home.css';
 
-import { useGetPostsQuery } from '../../store/apis/postApi';
+import {
+  useGetPostsQuery,
+  useLazyGetPostsQuery,
+} from '../../store/apis/postApi';
 import Profile from '../profile/Profile';
 
 const Home = () => {
-  const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(1);
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(page);
+
+  const [refetch] = useLazyGetPostsQuery();
+
   // console.log('postData', data?.data);
   const userData = data?.data?.data;
   console.log(userData);
@@ -19,7 +26,6 @@ const Home = () => {
   const postRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
   const openModal = () => {
@@ -36,6 +42,7 @@ const Home = () => {
     if (isSuccess) {
       const postData = data?.data?.data || [];
       console.log('mil raha hai', postData);
+      // setPosts((prevPosts) => [...prevPosts, ...postData]);
       setPosts(postData);
       setHasMore(true);
     }
@@ -56,9 +63,8 @@ const Home = () => {
   };
 
   const loadMorePosts = () => {
-    console.log('loading more posts...');
+    console.log('loading more posttt...');
     if (!isLoading && hasMore) {
-      console.log('increasing page number');
       setPage(page + 1);
     }
   };
@@ -73,7 +79,7 @@ const Home = () => {
   const handleScroll = () => {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
     if (scrollHeight - scrollTop === clientHeight) {
-      loadMorePosts(); // Load more posts when scrolled to bottom
+      loadMorePosts();
     }
   };
 
@@ -113,4 +119,5 @@ const Home = () => {
     </>
   );
 };
+
 export default Home;

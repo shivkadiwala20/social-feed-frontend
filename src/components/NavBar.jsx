@@ -11,6 +11,8 @@ import './NavBar.css';
 import CreateProfileModal from '../components/CreateProfileModal';
 import { deleteCookie } from '../utilities/helper';
 import { Auth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
+import CustomDialog from './CustomDialog';
 
 const navigation = [{ name: 'Feed', current: true }];
 
@@ -22,7 +24,7 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-
+  const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   // const openProfileModal = () => {
   //   console.log('sdjkfjkd');
   //   setIsProfileModalOpen(true);
@@ -33,11 +35,22 @@ export default function NavBar() {
   const closeProfileModal = () => {
     setIsProfileModalOpen(false);
   };
+  const openSignOutDialog = () => {
+    setIsSignOutDialogOpen(true);
+  };
+
+  const closeSignOutDialog = () => {
+    setIsSignOutDialogOpen(false);
+  };
 
   const { handleLoggedOutUser } = useContext(Auth);
   const handleSignOut = () => {
     handleLoggedOutUser();
     navigate('/');
+    toast.success('You have Sign Out Successfully!!', {
+      position: 'top-right',
+      autoClose: 1000,
+    });
   };
   return (
     <>
@@ -133,7 +146,7 @@ export default function NavBar() {
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
-                              onClick={handleSignOut}
+                              onClick={openSignOutDialog}
                             >
                               Sign out
                             </button>
@@ -146,11 +159,17 @@ export default function NavBar() {
               </div>
             </div>
 
-            <CreateProfileModal
+            {/* <CreateProfileModal
               isOpen={isProfileModalOpen}
               onClose={closeProfileModal}
+            /> */}
+            <CustomDialog
+              isOpen={isSignOutDialogOpen}
+              onClose={closeSignOutDialog}
+              title="Sign Out"
+              message="Are you sure you want to sign out?"
+              onConfirm={handleSignOut}
             />
-
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-1 px-2 pb-3 pt-2">
                 {navigation.map((item) => (

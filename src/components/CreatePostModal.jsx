@@ -4,7 +4,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
 import { useCreatePostMutation } from '../store/apis/postApi';
 
-export default function CreatePostModal({ isOpen, onClose }) {
+export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
   const [image, setImage] = useState(null);
   const inputRef = useRef(null);
 
@@ -42,11 +42,12 @@ export default function CreatePostModal({ isOpen, onClose }) {
     const body = {
       ...data,
       image: image,
-      isPrivate: true,
+      isPrivate: false,
     };
 
     const response = createPost(body);
     console.log(response);
+    setNewPost(response.data.data);
   };
 
   return (
