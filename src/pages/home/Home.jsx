@@ -104,7 +104,7 @@ const Home = () => {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="home">
         <button
           className=" xl:block my-8 mx-0 p-2 bg-gray-900 text-white rounded-[10rem]    text-x cursor-pointer text-center 

@@ -1,15 +1,16 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import {
   Bars3Icon,
   UserCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 import CreateProfileModal from '../components/CreateProfileModal';
 import { deleteCookie } from '../utilities/helper';
+import { Auth } from '../context/AuthContext';
 
 const navigation = [{ name: 'Feed', current: true }];
 
@@ -22,10 +23,10 @@ export default function NavBar() {
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  const openProfileModal = () => {
-    console.log('sdjkfjkd');
-    setIsProfileModalOpen(true);
-  };
+  // const openProfileModal = () => {
+  //   console.log('sdjkfjkd');
+  //   setIsProfileModalOpen(true);
+  // };
   const handleProfileClick = () => {
     navigate('/profile');
   };
@@ -33,8 +34,9 @@ export default function NavBar() {
     setIsProfileModalOpen(false);
   };
 
+  const { handleLoggedOutUser } = useContext(Auth);
   const handleSignOut = () => {
-    deleteCookie();
+    handleLoggedOutUser();
     navigate('/');
   };
   return (

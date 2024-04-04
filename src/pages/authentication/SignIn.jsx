@@ -18,7 +18,7 @@ export const SignIn = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  // const { handleLoggedInUser } = useContext(Auth);
+  const { handleLoggedInUser } = useContext(Auth);
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   // const {
@@ -42,8 +42,8 @@ export const SignIn = () => {
     try {
       const response = await login(submittedData);
       if (response?.data) {
-        // handleLoggedInUser(response?.data.data);
-        setCookie(response.data.data);
+        handleLoggedInUser(response?.data.data);
+        // setCookie(response.data.data);
         navigate('home');
         toast.success('You have Sign In Successfully!!', {
           position: 'top-right',

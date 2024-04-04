@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 
 import { Navigate } from 'react-router-dom';
 import { deleteCookie, setCookie } from '../utilities/helper';
+import { toast } from 'react-toastify';
 
 export const Auth = createContext();
 
@@ -11,6 +12,7 @@ const Context = ({ children }) => {
   const [userData, setUserData] = useState();
 
   const cookie = document.cookie === '' ? false : true;
+  console.trace('cookie', cookie);
   const [isLoggedIn, setIsLoggedIn] = useState(cookie);
 
   const handleLoggedInUser = (userData) => {
@@ -22,6 +24,10 @@ const Context = ({ children }) => {
   const handleLoggedOutUser = () => {
     setIsLoggedIn(false);
     deleteCookie();
+    toast.success('You have Sign Out Successfully!!', {
+      position: 'top-right',
+      autoClose: 1000,
+    });
   };
 
   return (

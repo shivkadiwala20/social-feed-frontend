@@ -5,10 +5,10 @@ import NavBar from '../../components/NavBar';
 import { Auth } from '../../context/AuthContext';
 
 const Layout = () => {
-  // const { isLoggedIn } = useContext(Auth);
+  const { isLoggedIn } = useContext(Auth);
   return (
     <>
-      {/* {isLoggedIn && <NavBar />} */}
+      {isLoggedIn && <NavBar />}
 
       <Outlet />
     </>
