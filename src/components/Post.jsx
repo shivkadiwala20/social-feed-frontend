@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Post.css';
 
-import { useGetPostImageQuery } from '../store/apis/postApi';
+import { useGetPostImageQuery, useGetPostsQuery } from '../store/apis/postApi';
 
 export const Post = ({
   desc = '',
@@ -17,8 +17,9 @@ export const Post = ({
   post_id = '',
   postRef,
   post,
+  username,
 }) => {
-  console.log('aa araha hai');
+  // console.log('aa araha hai');
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ export const Post = ({
   const postCreatedAt = date[2] + ' ' + getMonth + ' ' + date[0];
 
   const { data } = useGetPostImageQuery(post_id, { skip: !post_id });
-  console.log(data);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -48,6 +48,7 @@ export const Post = ({
       <div className="flex border ml-0 sm:mr-0 sm:mx-3 pl-2 mt-10 pr-1 sm:pr-0 sm:px-5 py-3 hover:bg-slate-100">
         <div className="w-full px-4 py-3">
           <div className="w-full flex justify-between relative">
+            <h2 className="font-semibold cursor-pointer">{username}</h2>
             <h2 className="font-semibold cursor-pointer">{title}</h2>
           </div>
           <p
@@ -62,7 +63,7 @@ export const Post = ({
             onClick={() => navigate(`/post/${post.id}`)}
           >
             <img
-              src={data?.data ? `data:image/png;base64, ${data?.data}` : 'sss'}
+              src={data?.imageData ? data?.imageData : 'sss'}
               className="max-w-full max-h-80 rounded-md my-2 mx-auto"
               alt="avatar"
             />

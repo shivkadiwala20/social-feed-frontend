@@ -26,7 +26,7 @@ const Profile = () => {
 
   return (
     <>
-      <NavBar />
+  
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
           <div className="px-6 py-4">
