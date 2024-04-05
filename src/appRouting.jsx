@@ -13,6 +13,7 @@ const getRouteWrapper = (component, authRoute = true) => {
     <AuthRedirect authenticatedRoute={authRoute}>{component}</AuthRedirect>
   );
 };
+// eslint-disable-next-line react-refresh/only-export-components
 const DefaultNavigate = () => {
   const { isLoggedIn } = useContext(Auth);
 

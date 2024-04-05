@@ -7,12 +7,14 @@
 /* home.css */
 
 .pagination {
+  padding-bottom: 24px;
   margin-top: 20px;
   display: flex;
   justify-content: center;
 }
 
 .pagination button {
+
   padding: 8px 16px;
   margin: 0 5px;
   border: none;
