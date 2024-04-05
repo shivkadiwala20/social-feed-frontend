@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const CustomDialog = ({ isOpen, onClose, title, message, onConfirm }) => {
   return (
@@ -36,3 +36,11 @@ const CustomDialog = ({ isOpen, onClose, title, message, onConfirm }) => {
 };
 
 export default CustomDialog;
+
+CustomDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};

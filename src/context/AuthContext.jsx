@@ -1,13 +1,11 @@
-/* eslint-disable react/prop-types */
 import { createContext, useContext, useState } from 'react';
 
 import { Navigate } from 'react-router-dom';
 import { deleteCookie, setCookie } from '../utilities/helper';
-import { toast } from 'react-toastify';
+import { PropTypes } from 'prop-types';
 
 export const Auth = createContext();
 
-// eslint-disable-next-line react/prop-types
 const Context = ({ children }) => {
   const [userData, setUserData] = useState();
 
@@ -48,3 +46,12 @@ export function AuthRedirect({ children, authenticatedRoute = true }) {
 
   return children;
 }
+
+Context.PropTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+AuthRedirect.PropTypes = {
+  children: PropTypes.node.isRequired,
+  authenticatedRoute: PropTypes.bool,
+};

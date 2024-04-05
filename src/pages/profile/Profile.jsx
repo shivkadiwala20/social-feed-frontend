@@ -4,9 +4,7 @@ import {
   useGetUserQuery,
 } from '../../store/apis/userApi';
 import CreateProfileModal from '../../components/CreateProfileModal';
-import NavBar from '../../components/NavBar';
 import { Auth } from '../../context/AuthContext';
-import { Navigate } from 'react-router-dom';
 import CustomDialog from '../../components/CustomDialog';
 import { toast } from 'react-toastify';
 import { deleteCookie } from '../../utilities/helper';
@@ -19,7 +17,7 @@ const Profile = () => {
   // const userData = !isLoading && data.data;
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  const [deleteUser, { isLoading, isError, error }] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   //console.log('deletedData', deleteUser);
 
   useEffect(() => {
@@ -119,6 +117,3 @@ const Profile = () => {
 };
 
 export default Profile;
-// box-shadow: 10px 10px 31px 2px rgba(0,0,0,0.51);
-// -webkit-box-shadow: 10px 10px 31px 2px rgba(0,0,0,0.51);
-// -moz-box-shadow: 10px 10px 31px 2px rgba(0,0,0,0.51);

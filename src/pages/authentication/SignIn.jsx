@@ -1,13 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../../store/apis/authApi';
-// import { useDispatch, useSelector } from "react-redux";
-// import { signInHandler } from "../../features/auth/helpers";
-// import Loader from 'react-loader-spinner';
-// import 'react-toastify/dist/ReactToastify.css';
-// import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-spinner-loader';
-import { setCookie } from '../../utilities/helper';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
@@ -60,8 +54,6 @@ export const SignIn = () => {
       //console.log(error);
     }
   };
-
-  // const guestUser = { username: "chrislevin22", password: "chrislevin@123" };
 
   return (
     <div className="flex flex-col justify-items-center items-center">
@@ -137,7 +129,7 @@ export const SignIn = () => {
                   )}
                   {errors.password && errors.password.type === 'minLength' && (
                     <span className="text-red-400">
-                      Password must be at least 6 characters long
+                      Password must be at least 8 characters long
                     </span>
                   )}
                 </label>
@@ -162,7 +154,6 @@ export const SignIn = () => {
           </div>
         </div>
       </div>
-      {/* <ToastContainer /> */}
     </div>
   );
 };

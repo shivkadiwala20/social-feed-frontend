@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSignUpMutation } from '../../store/apis/authApi';
@@ -184,30 +183,10 @@ const SignUp = () => {
             )}
             {errors.password && errors.password.type === 'minLength' && (
               <span className="text-red-400">
-                Password must be at least 6 characters long
+                Password must be at least 8 characters long
               </span>
             )}
           </label>
-
-          {/* <label className="text-sm text-left py-1 text-slate-900">
-            Confirm Password<span className="form_label"></span>
-            <input
-              {...register('confirmPassword', {
-                required: true,
-                validate: (value) => value === password,
-              })}
-              className="py-1 px-2 w-full mt-4 rounded-none border-2 focus:outline-blue-400"
-              type="password"
-            />
-            {errors.confirmPassword &&
-              errors.confirmPassword.type === 'required' && (
-                <span className="text-red-400">This field is required</span>
-              )}
-            {errors.confirmPassword &&
-              errors.confirmPassword.type === 'validate' && (
-                <span className="text-red-400">Passwords do not match</span>
-              )}
-          </label> */}
 
           <button
             type="submit"

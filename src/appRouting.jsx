@@ -6,6 +6,7 @@ import Profile from './pages/profile/Profile';
 import Layout from './pages/layouts/Layout';
 import { Auth, AuthRedirect } from './context/AuthContext';
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 
 const getRouteWrapper = (component, authRoute = true) => {
   return (
@@ -47,3 +48,7 @@ const appRouting = createBrowserRouter([
 ]);
 
 export default appRouting;
+AuthRedirect.propTypes = {
+  authenticatedRoute: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+};

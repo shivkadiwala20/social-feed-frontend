@@ -1,27 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
-import NavBar from '../../components/NavBar';
+import { useEffect, useRef, useState } from 'react';
 import { Post } from '../../components/Post';
 import CreatePostModal from '../../components/CreatePostModal';
 import './home.css';
-
 import { useGetPostsQuery } from '../../store/apis/postApi';
-
+import { ClipLoader } from 'react-spinners'; // Import the spinner component
+import { v4 as uuidv4 } from 'uuid';
 const Home = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading, isError, error } = useGetPostsQuery(page);
-
+  console.log('data', data);
   const postRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(new Set());
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [reachedEnd, setReachedEnd] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
   const setNewPost = (post) => {
-    console.log('setPost', post);
-    console.log([post, ...posts]);
-    setPosts([post, ...posts]);
+    setPosts((prevPosts) => new Set([post, ...prevPosts]));
   };
 
   useEffect(() => {
@@ -32,7 +31,11 @@ const Home = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      setPosts((prevPosts) => [...prevPosts, ...data.data.data]);
+      setPosts((prevPosts) => new Set([...prevPosts, ...data.data.data]));
+      setLoadingMore(false);
+      if (data.data.data.length === 0) {
+        setReachedEnd(true);
+      }
     }
   }, [data, isLoading]);
 
@@ -47,9 +50,15 @@ const Home = () => {
           ((document.documentElement && document.documentElement.scrollTop) ||
             0);
 
-      if (windowHeight + scrollTop >= documentHeight) {
+      if (
+        windowHeight + scrollTop >= documentHeight &&
+        !reachedEnd &&
+        !isLoading
+      ) {
         console.log('hit');
         setPage((prevPage) => prevPage + 1);
+        setLoadingMore(true);
+        setTimeout(() => setLoadingMore(false), 4000);
       }
     };
 
@@ -58,7 +67,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [reachedEnd, isLoading]);
 
   return (
     <>
@@ -76,22 +85,27 @@ const Home = () => {
         setNewPost={setNewPost}
       />
       {isLoading && <p>....Loading</p>}
-      {!isLoading && posts.length === 0 && <p>No posts</p>}
-      {posts.map((post) => (
-        <Post
-          postRef={postRef}
-          key={post?._id}
-          post_id={post?.filePath ? post._id : undefined}
-          // username={post?.userData.username}
-          desc={post?.description}
-          title={post?.title}
-          createdAt={post?.createdAt}
-          post={post}
-        />
-      ))}
-      {isLoading && <p>Loading more posts...</p>}
+      {[...posts].map(
+        (
+          post // Convert Set back to an array for mapping
+        ) => (
+          <Post
+            postRef={postRef}
+            key={uuidv4()}
+            post_id={post?.filePath ? post._id : undefined}
+            username={post?.userData?.username}
+            desc={post?.description}
+            title={post?.title}
+            createdAt={post?.createdAt}
+            post={post}
+          />
+        )
+      )}
+      {loadingMore && (
+        <ClipLoader color="#123abc" loading={loadingMore} size={35} />
+      )}{' '}
       {!isLoading && data && data.data.data.length === 0 && (
-        <p>No more posts to load</p>
+        <p>No more posts to show</p>
       )}
     </>
   );

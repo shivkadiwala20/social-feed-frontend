@@ -1,14 +1,12 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ClipLoader } from 'react-spinners';
 import { GoComment } from 'react-icons/go';
 import { BsSuitHeart, BsSuitHeartFill } from 'react-icons/bs';
-import { useDispatch } from 'react-redux';
-// import { getFormattedDate } from '../utilities/getFormattedDate';
-// import { likePost, dislikePost } from '../features/post/helpers';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Post.css';
+import PropTypes from 'prop-types';
 
-import { useGetPostImageQuery, useGetPostsQuery } from '../store/apis/postApi';
+import { useGetPostImageQuery } from '../store/apis/postApi';
 
 export const Post = ({
   desc = '',
@@ -19,12 +17,11 @@ export const Post = ({
   post,
   username,
 }) => {
-  // //console.log('aa araha hai');
   const [isLiked, setIsLiked] = useState(false);
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  const { pathname } = useLocation();
   const getMonth = new Date(createdAt).toLocaleString('default', {
     month: 'long',
   });
@@ -34,13 +31,16 @@ export const Post = ({
 
   const { data } = useGetPostImageQuery(post_id, { skip: !post_id });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleLike = () => {
     setIsLiked(!isLiked);
-    if (!isLiked) {
-      dispatch(likePost({ postId: post?._id, token }));
-    } else {
-      dispatch(dislikePost({ postId: post?._id, token }));
-    }
   };
 
   return (
@@ -58,16 +58,22 @@ export const Post = ({
             {desc}{' '}
           </p>
 
-          <div
-            className="max-w-3xl max-h-80 mx-auto bg-blue-100 rounded-md cursor-pointer"
-            onClick={() => navigate(`/post/${post.id}`)}
-          >
-            <img
-              src={data?.imageData ? data?.imageData : 'sss'}
-              className="max-w-full max-h-80 rounded-md my-2 mx-auto"
-              alt="avatar"
-            />
-          </div>
+          {loading ? (
+            <div className="loader-container">
+              <ClipLoader color="#123abc" loading={loading} size={35} />
+            </div>
+          ) : (
+            <div
+              className="max-w-3xl max-h-80 mx-auto bg-blue-100 rounded-md cursor-pointer"
+              onClick={() => navigate(`/post/${post.id}`)}
+            >
+              <img
+                src={data?.imageData ? data?.imageData : 'sss'}
+                className="max-w-full max-h-80 rounded-md my-2 mx-auto"
+                alt="avatar"
+              />
+            </div>
+          )}
 
           <p className="text-sm text-gray-600">{postCreatedAt}</p>
           <div className="flex justify-between pt-8">
@@ -83,30 +89,26 @@ export const Post = ({
                   onClick={handleLike}
                 />
               )}
-              <span className="text-sm pl-4 font-semibold">
-                {pathname.includes('post')
-                  ? ''
-                  : post?.likes?.likeCount
-                    ? post?.likes?.likeCount
-                    : null}
-              </span>
             </div>
             <div className="flex">
               <GoComment
                 onClick={() => navigate(`/post/${post.id}`)}
                 className="text-xl cursor-pointer"
               />
-              <span className="text-sm pl-4 font-semibold">
-                {pathname.includes('post')
-                  ? ''
-                  : post?.comments?.length > 0
-                    ? post?.comments?.length
-                    : ''}
-              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
+};
+
+Post.propTypes = {
+  desc: PropTypes.string,
+  title: PropTypes.string,
+  createdAt: PropTypes.string,
+  post_id: PropTypes.string,
+  postRef: PropTypes.object,
+  post: PropTypes.object,
+  username: PropTypes.string,
 };

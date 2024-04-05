@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 // import { BsFillImageFill } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
 import { useCreatePostMutation } from '../store/apis/postApi';
-
+import PropTypes from 'prop-types';
 export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
   const [image, setImage] = useState(null);
   const inputRef = useRef(null);
@@ -43,7 +43,7 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
     };
 
     const response = await createPost(body);
-    // //console.log(response);
+    console.log(response);
     setNewPost(response?.data?.data);
 
     setImage('');
@@ -58,6 +58,8 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
         className="fixed inset-0 z-10 overflow-y-auto backdrop-blur-sm"
         onClose={() => {
           clearErrors();
+          reset();
+          setImage(null);
           onClose();
         }}
       >
@@ -91,7 +93,7 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
                     <div className="mb-4 flex">
                       <input
                         {...register('image', {
-                          validate: (value) => {
+                          validate: () => {
                             if (!image) {
                               //console.log(value);
                               return 'Image is required';
@@ -129,11 +131,15 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
                           )}
                         </div>
                       </label>
-                      {errors.image && !image && (
-                        <p className="text-red-500">{errors.image.message}</p>
-                      )}
                     </div>
                   </div>
+                  {errors.image && !image && (
+                    <div className="mb-6">
+                      <p className="text-red-500 text-center">
+                        {errors.image.message}
+                      </p>
+                    </div>
+                  )}
                   <div className="mb-4">
                     <input
                       type="text"
@@ -173,8 +179,13 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
                   </button>
                   <button
                     type="button"
-                    onClick={onClose}
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ml-2"
+                    onClick={() => {
+                      clearErrors();
+                      reset();
+                      setImage(null);
+                      onClose();
+                    }}
                   >
                     Close
                   </button>
@@ -187,3 +198,9 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
     </Transition.Root>
   );
 }
+
+CreatePostModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  setNewPost: PropTypes.func.isRequired,
+};
