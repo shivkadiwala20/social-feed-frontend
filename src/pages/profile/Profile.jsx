@@ -11,17 +11,16 @@ import { deleteCookie } from '../../utilities/helper';
 
 const Profile = () => {
   const { data } = useGetUserQuery();
-  //console.log('profileData', data);
+  // console.log('profileData', data);
   const [userData, setUserData] = useState(data?.data);
+  // console.log('userData', userData);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // const userData = !isLoading && data.data;
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const [deleteUser] = useDeleteUserMutation();
-  //console.log('deletedData', deleteUser);
 
   useEffect(() => {
-    //console.log(userData);
     setUserData(data?.data);
   }, [data]);
 
@@ -40,9 +39,7 @@ const Profile = () => {
   const { handleLoggedOutUser } = useContext(Auth);
   const handleDeleteClick = async () => {
     try {
-      // Call the deleteUser mutation
       await deleteUser().unwrap();
-      // Perform necessary actions after successful deletion
       deleteCookie();
       handleLoggedOutUser();
       toast.success('You have deleted your account successfully!!', {
@@ -51,7 +48,6 @@ const Profile = () => {
       });
     } catch (error) {
       console.error('Failed to delete account:', error);
-      // Handle error appropriately
     }
   };
 

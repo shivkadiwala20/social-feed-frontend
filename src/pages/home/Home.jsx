@@ -1,26 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
 import { Post } from '../../components/Post';
 import CreatePostModal from '../../components/CreatePostModal';
 import './home.css';
+
 import { useGetPostsQuery } from '../../store/apis/postApi';
-import { ClipLoader } from 'react-spinners'; // Import the spinner component
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchPost } from '../../actions/action.js';
+
 const Home = () => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useGetPostsQuery(page);
-  console.log('data', data);
-  const postRef = useRef(null);
+  const dispatch = useDispatch();
+  const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(page);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [posts, setPosts] = useState(new Set());
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [reachedEnd, setReachedEnd] = useState(false);
+  const posts = useSelector((state) => state.posts.posts);
+  const [hasMore, setHasMore] = useState(true);
 
   const openModal = () => {
     setIsModalOpen(true);
-  };
-
-  const setNewPost = (post) => {
-    setPosts((prevPosts) => new Set([post, ...prevPosts]));
   };
 
   useEffect(() => {
@@ -30,44 +27,31 @@ const Home = () => {
   }, [error, isError]);
 
   useEffect(() => {
-    if (!isLoading && data) {
-      setPosts((prevPosts) => new Set([...prevPosts, ...data.data.data]));
-      setLoadingMore(false);
-      if (data.data.data.length === 0) {
-        setReachedEnd(true);
+    if (isSuccess) {
+      dispatch(fetchPost(data?.data?.data));
+      if (data?.data?.data.length === 0 && page !== 1) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
       }
     }
-  }, [data, isLoading]);
+  }, [data, isSuccess]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop =
-        window.scrollY ||
-        window.pageYOffset ||
-        document.body.scrollTop +
-          ((document.documentElement && document.documentElement.scrollTop) ||
-            0);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
-      if (
-        windowHeight + scrollTop >= documentHeight &&
-        !reachedEnd &&
-        !isLoading
-      ) {
-        console.log('hit');
-        setPage((prevPage) => prevPage + 1);
-        setLoadingMore(true);
-        setTimeout(() => setLoadingMore(false), 4000);
-      }
-    };
+  const nextPage = () => {
+    if (hasMore) {
+      setPage(page + 1);
+    }
+  };
 
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [reachedEnd, isLoading]);
+  const prevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <>
@@ -79,34 +63,37 @@ const Home = () => {
           + Create Post
         </button>
       </div>
-      <CreatePostModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        setNewPost={setNewPost}
-      />
+      <CreatePostModal isOpen={isModalOpen} onClose={closeModal} />
       {isLoading && <p>....Loading</p>}
-      {[...posts].map(
-        (
-          post // Convert Set back to an array for mapping
-        ) => (
-          <Post
-            postRef={postRef}
-            key={uuidv4()}
-            post_id={post?.filePath ? post._id : undefined}
-            username={post?.userData?.username}
-            desc={post?.description}
-            title={post?.title}
-            createdAt={post?.createdAt}
-            post={post}
-          />
-        )
-      )}
-      {loadingMore && (
-        <ClipLoader color="#123abc" loading={loadingMore} size={35} />
-      )}{' '}
-      {!isLoading && data && data.data.data.length === 0 && (
-        <p>No more posts to show</p>
-      )}
+      {posts?.length === 0 && !isLoading && <p>No posts is there</p>}
+      {posts.map((post) => (
+        <Post
+          key={post?._id}
+          post_id={post.filePath ? post?._id : undefined}
+          username={post?.userData?.username}
+          desc={post?.description}
+          title={post?.title}
+          createdAt={post?.createdAt}
+          post={post}
+        />
+      ))}
+      {isLoading && <p>Loading more posts...</p>}
+      {!isLoading && !hasMore && <p>You're all caught up!</p>}
+      <div className="pagination">
+        {page > 1 && <button onClick={prevPage}>Back</button>}
+        <button
+          onClick={nextPage}
+          style={{
+            display:
+              !hasMore || (posts?.length === 0 && !isLoading)
+                ? 'none'
+                : 'block',
+          }}
+          disabled={!hasMore && posts?.length === 0 && !isLoading}
+        >
+          Next
+        </button>
+      </div>
     </>
   );
 };

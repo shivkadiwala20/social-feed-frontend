@@ -15,7 +15,7 @@ export const Post = ({
   post_id = '',
   postRef,
   post,
-  username,
+  username = '',
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [loading, setLoading] = useState(true);

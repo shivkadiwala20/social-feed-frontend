@@ -1,13 +1,17 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-// import { BsFillImageFill } from 'react-icons/bs';
+
 import { useForm } from 'react-hook-form';
 import { useCreatePostMutation } from '../store/apis/postApi';
 import PropTypes from 'prop-types';
-export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
+
+import { useDispatch } from 'react-redux';
+import { addPost } from '../actions/action';
+
+export default function CreatePostModal({ isOpen, onClose }) {
   const [image, setImage] = useState(null);
   const inputRef = useRef(null);
-
+  const dispatch = useDispatch();
   const [createPost] = useCreatePostMutation();
 
   const handleImageUpload = (event) => {
@@ -43,8 +47,9 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
     };
 
     const response = await createPost(body);
-    console.log(response);
-    setNewPost(response?.data?.data);
+    // console.log(response);
+    // setNewPost(response?.data?.data);
+    dispatch(addPost(response?.data?.data));
 
     setImage('');
     reset();
@@ -202,5 +207,4 @@ export default function CreatePostModal({ isOpen, onClose, setNewPost }) {
 CreatePostModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  setNewPost: PropTypes.func.isRequired,
 };
