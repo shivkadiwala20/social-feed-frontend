@@ -10,8 +10,8 @@ import { toast } from 'react-toastify';
 import { deleteCookie } from '../../utilities/helper';
 
 const Profile = () => {
-  const { data } = useGetUserQuery();
-  // console.log('profileData', data);
+  const { data, refetch } = useGetUserQuery();
+  console.log('getData', data?.data);
   const [userData, setUserData] = useState(data?.data);
   // console.log('userData', userData);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -36,6 +36,13 @@ const Profile = () => {
     setIsDeleteDialogOpen(false);
   };
 
+  const handleUpdateUser = async () => {
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Failed to update user:', error);
+    }
+  };
   const { handleLoggedOutUser } = useContext(Auth);
   const handleDeleteClick = async () => {
     try {
@@ -106,6 +113,7 @@ const Profile = () => {
           onClose={() => setIsProfileModalOpen(false)}
           userData={userData}
           setUserData={setUserData}
+          onProfileUpdate={handleUpdateUser}
         />
       </div>
     </>

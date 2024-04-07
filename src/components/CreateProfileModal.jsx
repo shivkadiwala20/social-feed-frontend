@@ -10,7 +10,9 @@ export default function CreateProfileModal({
   onClose,
   userData,
   setUserData,
+  onProfileUpdate,
 }) {
+  console.log('userDataInProfileModal', userData);
   const [updateUser] = useUpdateUserMutation();
 
   const {
@@ -37,6 +39,7 @@ export default function CreateProfileModal({
   }, [userData, reset]);
 
   const onSubmit = async (submittedData) => {
+    console.log('submittedData', submittedData);
     const body = {
       ...submittedData,
       isPrivate: true,
@@ -45,12 +48,14 @@ export default function CreateProfileModal({
     const response = await updateUser(body);
     try {
       if (response.data) {
+        console.log('response', response?.data?.data);
         setUserData(response?.data.data);
         onClose();
         toast.success('Profile Updated Successfully!!', {
           position: 'top-right',
           autoClose: 1000,
         });
+        onProfileUpdate();
       } else {
         toast.error(response.error.data.message, {
           position: 'top-right',
@@ -252,4 +257,5 @@ CreateProfileModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   userData: PropTypes.object.isRequired,
   setUserData: PropTypes.func.isRequired,
+  onProfileUpdate: PropTypes.func.isRequired,
 };
