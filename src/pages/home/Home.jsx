@@ -9,22 +9,15 @@ import { fetchPost } from '../../actions/action.js';
 
 const Home = () => {
   const [page, setPage] = useState(1);
-
-  const [posts, setPosts] = useState([]);
-  const [isNewPost, setIsNewPost] = useState(false);
-
-  // 5 -> setPosts([...posts, 5]) -> posts = 5
-  // 5 -> setPosts([...posts, 5]) -> posts = 10
-  // 5 -> setPosts([...posts, 5]) -> posts = 15
-  // 1 -> setPosts([...posts, 1]) -> posts = 16 (setHasMore -> false)
+  const [pagination, setPagination] = useState([]);
 
   const dispatch = useDispatch();
   const { data, isLoading, isSuccess, isError, error } = useGetPostsQuery(page);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const initialPosts = useSelector((state) => state.posts.posts);
+  const posts = useSelector((state) => state.posts.posts);
   const [hasMore, setHasMore] = useState(true);
   const topRef = useRef(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -34,7 +27,6 @@ const Home = () => {
     setIsModalOpen(false);
   };
 
-  // Add useRef to keep track of the bottom of the page
   const bottomOfPage = useRef();
 
   useEffect(() => {
@@ -44,37 +36,8 @@ const Home = () => {
   }, [error, isError]);
 
   useEffect(() => {
-    if (initialPosts && initialPosts.length > 0) {
-      if (!initialPosts[0].userData) {
-        setIsNewPost(true);
-        return;
-      }
-
-      if (isNewPost) {
-        setPosts([initialPosts[0], ...posts]);
-        setIsNewPost(false);
-      } else {
-        setPosts([...posts, ...initialPosts]);
-      }
-    }
-  }, [initialPosts]);
-
-  useEffect(() => {
-    // console.log(posts);
-  }, [posts]);
-
-  useEffect(() => {
-    const newPosts = data?.data?.data;
-    if (newPosts) {
-      console.log(newPosts);
-      setPosts([...posts, ...newPosts]);
-    }
-  }, [data]);
-
-  useEffect(() => {
     if (isSuccess) {
       dispatch(fetchPost(data?.data?.data));
-      return;
     }
   }, [data]);
 
@@ -88,27 +51,29 @@ const Home = () => {
   }, [data, page]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const bottomOffset =
-        bottomOfPage.current.getBoundingClientRect().top - window.innerHeight;
-
-      if (bottomOffset < 0) {
-        setPage((prevPage) => prevPage + 1);
-        window.removeEventListener('scroll', handleScroll);
-        if (topRef) {
-          // topRef.current.scrollIntoView({ behavior: 'instant' });
-        }
-      }
-    };
-
-    if (hasMore) {
-      window.addEventListener('scroll', handleScroll);
+    const totalPages = Math.ceil(data?.data?.total / 5);
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
     }
+    setPagination(pages);
+  }, [data]);
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [data, hasMore]);
+  const changePage = (newPage) => {
+    setPage(newPage);
+  };
+
+  const goToPrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (page < pagination.length) {
+      setPage(page + 1);
+    }
+  };
 
   return (
     <>
@@ -122,8 +87,9 @@ const Home = () => {
       </div>
       <CreatePostModal isOpen={isModalOpen} onClose={closeModal} />
       {isLoading && <p>....Loading</p>}
-      {posts?.length === 0 && !isLoading && <p>No posts is there</p>}
+      {posts?.length === 0 && !isLoading && <p>No posts are there</p>}
       <div className="min-h-screen">
+        <div ref={topRef}>Page {page}</div>
         {posts.map((post) => (
           <Post
             key={post?._id}
@@ -138,7 +104,46 @@ const Home = () => {
         {isLoading && <p>Loading more posts...</p>}
         {!isLoading && !hasMore && <p>You're all caught up!</p>}
       </div>
-      <div ref={bottomOfPage}></div>{' '}
+      <div className="flex justify-center mt-8">
+        <nav className="flex space-x-4" aria-label="Pagination">
+          <button
+            className={`px-3 py-1 rounded-md ${
+              page === 1
+                ? 'bg-gray-200 text-gray-600 cursor-not-allowed'
+                : 'bg-blue-600 text-white'
+            }`}
+            onClick={goToPrevPage}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          {pagination.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              className={`px-3 py-1 rounded-md ${
+                pageNumber === page
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-600'
+              }`}
+              onClick={() => changePage(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            className={`px-3 py-1 rounded-md ${
+              page === pagination.length
+                ? 'bg-gray-200 text-gray-600 cursor-not-allowed'
+                : 'bg-blue-600 text-white'
+            }`}
+            onClick={goToNextPage}
+            disabled={page === pagination.length}
+          >
+            Next
+          </button>
+        </nav>
+      </div>
+      <div ref={bottomOfPage}></div>
     </>
   );
 };

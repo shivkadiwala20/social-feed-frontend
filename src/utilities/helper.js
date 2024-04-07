@@ -3,17 +3,18 @@ export const regex = {
 };
 export const setCookie = (data) => {
   //console.log('cookieData', data);
-  document.cookie = 'token=' + data?.accessToken;
+  document.cookie = 'data=' + data?.accessToken;
   return true;
 };
 
 export const getToken = () => {
-  const token = document.cookie.split('=')[1];
+  const data = document.cookie.split('=')[1];
 
-  return token;
+  return data;
 };
 
 export const deleteCookie = () => {
-  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = 'data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  // document.cookie = token + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
   return true;
 };

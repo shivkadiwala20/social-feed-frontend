@@ -19,6 +19,14 @@ export const userApi = apiInterFace.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    deleteUser: builder.mutation({
+      query: (data) => ({
+        url: '/users/delete-user',
+        method: 'DELETE',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 export const {
