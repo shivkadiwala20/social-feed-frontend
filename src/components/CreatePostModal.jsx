@@ -1,21 +1,58 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { BsFillImageFill } from 'react-icons/bs';
-export default function CreatePostModal({ isOpen, onClose }) {
-  const [postContent, setPostContent] = useState('');
-  const [image, setImage] = useState(null);
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(file);
-    }
+import { useForm } from 'react-hook-form';
+import { useCreatePostMutation } from '../store/apis/postApi';
+import PropTypes from 'prop-types';
+
+import { useDispatch } from 'react-redux';
+import { addPost } from '../actions/action';
+
+export default function CreatePostModal({ isOpen, onClose }) {
+  const [image, setImage] = useState(null);
+  const inputRef = useRef(null);
+  const dispatch = useDispatch();
+  const [createPost] = useCreatePostMutation();
+
+  const handleImageUpload = (event) => {
+    const uploadedImage = event.target.files[0];
+    setImage(uploadedImage);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setPostContent('');
-    setImage(null);
+  const handleClick = () => {
+    inputRef.current.click();
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (submittedData) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      // //console.log(reader.result);
+      submittedData.image = reader.result;
+    });
+    reader.readAsDataURL(image);
+    //console.log('onSubmitData', { submittedData });
+
+    const body = {
+      ...submittedData,
+      image: image,
+      isPrivate: false,
+    };
+
+    const response = await createPost(body);
+    // console.log(response);
+    // setNewPost(response?.data?.data);
+    dispatch(addPost(response?.data?.data));
+
+    setImage('');
+    reset();
     onClose();
   };
 
@@ -24,7 +61,12 @@ export default function CreatePostModal({ isOpen, onClose }) {
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto backdrop-blur-sm"
-        onClose={onClose}
+        onClose={() => {
+          clearErrors();
+          reset();
+          setImage(null);
+          onClose();
+        }}
       >
         <div className="flex items-center justify-center min-h-screen px-4">
           <Transition.Child
@@ -49,32 +91,87 @@ export default function CreatePostModal({ isOpen, onClose }) {
             leaveTo="opacity-0 scale-95"
           >
             <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="px-6 py-4">
+                  <h2 className="text-xl font-semibold mb-4">Create Post</h2>
+                  <div className="mb-8 flex items-center justify-center">
+                    <div className="mb-4 flex">
+                      <input
+                        {...register('image', {
+                          validate: () => {
+                            if (!image) {
+                              //console.log(value);
+                              return 'Image is required';
+                            } else {
+                              return true;
+                            }
+                          },
+                        })}
+                        id="image-upload"
+                        type="file"
+                        ref={inputRef}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="cursor-pointer text-blue-500"
+                      >
+                        <div className="relative w-64 h-48 cursor-pointer mx-auto">
+                          {image ? (
+                            <img
+                              className="object-cover w-full h-full rounded"
+                              src={URL.createObjectURL(image)}
+                              alt="Uploaded avatar"
+                              onClick={handleClick}
+                            />
+                          ) : (
+                            <label
+                              htmlFor="image-upload"
+                              className="flex items-center justify-center w-full h-full bg-gray-200 rounded cursor-pointer"
+                            >
+                              <span className="text-gray-500">Add Photo</span>
+                            </label>
+                          )}
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                  {errors.image && !image && (
+                    <div className="mb-6">
+                      <p className="text-red-500 text-center">
+                        {errors.image.message}
+                      </p>
+                    </div>
+                  )}
                   <div className="mb-4">
-                    <textarea
-                      value={postContent}
-                      onChange={(e) => setPostContent(e.target.value)}
-                      className="w-full h-20 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                      placeholder="What's happening?"
+                    <input
+                      type="text"
+                      {...register('title', { required: true })}
+                      className={`w-full p-2 border ${
+                        errors.title ? 'border-red-500' : 'border-gray-300'
+                      } rounded-md focus:outline-none focus:border-blue-500`}
+                      placeholder="Title"
                     />
+                    {errors.title && (
+                      <p className="text-red-500">Title is required</p>
+                    )}
                   </div>
                   <div className="mb-4">
                     <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="image-upload"
+                      type="text"
+                      {...register('description', { required: true })}
+                      className={`w-full p-2 border ${
+                        errors.description
+                          ? 'border-red-500'
+                          : 'border-gray-300'
+                      } rounded-md focus:outline-none focus:border-blue-500`}
+                      placeholder="Description"
                     />
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer text-blue-500"
-                    >
-                      Upload Image
-                      <BsFillImageFill className="text-2xl mt-1 text-blue-700 cursor-pointer" />
-                    </label>
-                    {image && <span className="ml-2">{image.name}</span>}
+                    {errors.description && (
+                      <p className="text-red-500">Description is required</p>
+                    )}
                   </div>
                 </div>
 
@@ -85,6 +182,18 @@ export default function CreatePostModal({ isOpen, onClose }) {
                   >
                     Post
                   </button>
+                  <button
+                    type="button"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ml-2"
+                    onClick={() => {
+                      clearErrors();
+                      reset();
+                      setImage(null);
+                      onClose();
+                    }}
+                  >
+                    Close
+                  </button>
                 </div>
               </form>
             </div>
@@ -94,3 +203,8 @@ export default function CreatePostModal({ isOpen, onClose }) {
     </Transition.Root>
   );
 }
+
+CreatePostModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

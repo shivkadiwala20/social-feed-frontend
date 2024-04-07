@@ -1,4 +1,35 @@
-#root{
-    padding: 0px;
-    max-width: 100%;
+.home {
+  display: flex ;
+  justify-content: center ;
+  justify-content: flex-end ;
+  margin-right: 55px;
+}
+/* home.css */
+
+.pagination {
+  padding-bottom: 24px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.pagination button:disabled {
+  opacity: 0.5; /* Reduced opacity when disabled */
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
 }

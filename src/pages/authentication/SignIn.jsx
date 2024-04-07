@@ -1,22 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../../store/apis/authApi';
-// import { useDispatch, useSelector } from "react-redux";
-// import { signInHandler } from "../../features/auth/helpers";
-// import Loader from 'react-loader-spinner';
-// import 'react-toastify/dist/ReactToastify.css';
-// import { ToastContainer, toast } from 'react-toastify';
 import Loader from 'react-spinner-loader';
-import { setCookie } from '../../utilities/helper';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useContext } from 'react';
+import { Auth } from '../../context/AuthContext';
 export const SignIn = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const { handleLoggedInUser } = useContext(Auth);
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   // const {
@@ -34,19 +30,20 @@ export const SignIn = () => {
     //   // alert("hi")
     // } else {
     //   // dispatch(signInHandler(data));
-    //   console.log('data', data);
+    //   //console.log('data', data);
     // }
-    // console.log(data);
+    // //console.log(data);
     try {
       const response = await login(submittedData);
       if (response?.data) {
-        setCookie(response.data.data);
+        handleLoggedInUser(response?.data.data);
+        // setCookie(response.data.data);
         navigate('home');
         toast.success('You have Sign In Successfully!!', {
           position: 'top-right',
           autoClose: 1000,
         });
-        console.log(response.data);
+        //console.log(response.data);
       } else {
         toast.error(response.error.data.message, {
           position: 'top-right',
@@ -54,11 +51,9 @@ export const SignIn = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
-
-  // const guestUser = { username: "chrislevin22", password: "chrislevin@123" };
 
   return (
     <div className="flex flex-col justify-items-center items-center">
@@ -134,7 +129,7 @@ export const SignIn = () => {
                   )}
                   {errors.password && errors.password.type === 'minLength' && (
                     <span className="text-red-400">
-                      Password must be at least 6 characters long
+                      Password must be at least 8 characters long
                     </span>
                   )}
                 </label>
@@ -159,7 +154,6 @@ export const SignIn = () => {
           </div>
         </div>
       </div>
-      {/* <ToastContainer /> */}
     </div>
   );
 };
